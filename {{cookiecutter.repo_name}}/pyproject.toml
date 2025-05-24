@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{{ cookiecutter.package_name }}"
+version = "{{ cookiecutter.initial_version }}"
+description = "A brief description of your project."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "ruff",
+  "pytest",
+  "mkdocs-material",
+  "mkdocstrings[python]",
+  "pre-commit",
+  "typeguard"        # For runtime type checking
+]
+
+[tool.ruff]
+line-length = 120
+lint.select = ["E", "F", "I"] # errors, pyflakes, isort
+lint.ignore = ["E501"]        # example, line too long (handled by formatter)
+
+[tool.pytest.ini_options]
+addopts = "-q"
+# Optional: to load .env files for pytest, uncomment if python-dotenv is added
+# env_files = [
+#    ".env"
+# ]

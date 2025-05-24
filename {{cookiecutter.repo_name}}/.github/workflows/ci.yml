@@ -1,0 +1,56 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build: # Changed from 'test' in issue to 'build' to match existing build.yml job name, can be reverted if needed
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.9', '3.10', '3.11', '3.12' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          # cache: 'pip' # The issue uses 'pip' for cache, but we're moving to uv.
+                        # However, setup-python's cache is for pip's global cache, 
+                        # which uv can also use if uv is installed via pip.
+                        # For uv specific cache, it's usually handled differently by actions/cache.
+                        # Let's use setup-python's cache for now as it's simple.
+          cache: 'pip'
+
+
+      - name: Install uv
+        run: pip install uv # Consistent with other files
+
+      - name: Install dependencies
+        run: uv pip install --system .[dev]
+
+      - name: Lint & format (ruff)
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Tests
+        run: pytest -q # as per pyproject.toml's addopts
+
+  # Auto-merge for Dependabot
+  enable-automerge:
+    name: Enable PR auto-merge if Dependabot and CI green
+    if: |
+      github.actor == 'dependabot[bot]' &&
+      # github.event_name == 'pull_request' && # Not strictly needed, actor check is primary
+      success() # This job depends on the 'build' job, so it implicitly waits.
+    needs: build # Explicitly state dependency
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write # peter-evans/enable-pull-request-automerge may need this
+    steps:
+      - name: Enable auto-merge for Dependabot PRs
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Default GITHUB_TOKEN has necessary permissions
+          merge_method: squash

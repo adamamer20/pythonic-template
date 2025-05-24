@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "actions"
+
+  - package-ecosystem: "pip"
+    directory: "/" # For the project's Python dependencies defined in pyproject.toml
+    schedule:
+      interval: "daily"
+    # Group all dev-only bumps into one PR
+    groups:
+      dev-deps:
+        dependency-type: "development"
+    labels:
+      - "dependencies"
+      - "python"
