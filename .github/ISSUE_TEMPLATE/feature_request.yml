@@ -1,0 +1,35 @@
+name: ✨ Feature Request
+description: Suggest a feature for mesa-frames
+title: "[Feature]: "
+labels: ["triage", "feature"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request! 🙏
+        We appreciate your ideas to improve our project.
+  - type: textarea
+    id: problem_description
+    attributes:
+      label: "🤔 Problem Description"
+      description: "Is your feature request related to a problem? Provide a clear and concise description of the problem."
+      placeholder: "Describe the problem here..."
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: "💡 Proposed Solution"
+      description: "Describe the solution you'd like. What do you want to happen?"
+      placeholder: "Describe your proposed solution here..."
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "🔄 Alternatives Considered"
+      description: "Have you considered any alternative solutions or features? If so, please describe them."
+      placeholder: "Describe any alternatives considered..."
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "➕ Additional Context"
+      description: "Add any other context, screenshots, or examples about the feature request here."
+      placeholder: "Additional context, screenshots, or examples..."
