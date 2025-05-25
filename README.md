@@ -35,9 +35,11 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 
 1. **Install Cookiecutter** (if not already installed):
    ```bash
-   pip install cookiecutter
-   # or
+   # Using uv (recommended)
    uv tool install cookiecutter
+   
+   # Or using pip
+   pip install cookiecutter
    ```
 
 2. **Generate your project**:
@@ -49,6 +51,7 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
    - Project name: "My Amazing Library"
    - Package name: (auto-generated from project name)
    - Author information
+   - Python version (3.9-3.12, defaults to 3.12)
    - License choice (MIT, Apache-2.0, BSD-3-Clause)
    - Docker support (optional)
 
@@ -57,12 +60,19 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
    cd your-new-project
    ```
 
-5. **Install development dependencies**:
+5. **Dependencies are automatically installed via the post-generation hook**. If needed, manually sync:
    ```bash
-   uv pip install -e .[dev]
+   uv sync --all-extras
    ```
 
 6. **Start developing**! 🎉
+   ```bash
+   # Run tests
+   make test
+   
+   # Start coding in src/your_package/
+   # Tests go in tests/
+   ```
 
 ## Template Configuration
 
@@ -108,27 +118,30 @@ your-project/
 After generating your project:
 
 ### 1. **Environment Setup**
+
 ```bash
 # Copy environment template
 cp .env.example .env
 
-# Install dependencies
-uv pip install -e .[dev]
+# Sync dependencies (automatically done by post-gen hook)
+uv sync --all-extras
 
-# Install pre-commit hooks
-pre-commit install
+# Verify pre-commit is installed (automatically done by post-gen hook)
+pre-commit --version
 ```
 
 ### 2. **Development Commands**
+
 ```bash
 # Run tests
-pytest
+make test          # or: uv run pytest
 
-# Run tests with type checking
-DEV_TYPECHECK=1 pytest
+# Run tests with type checking  
+make test-type     # or: uv run env DEV_TYPECHECK=1 pytest
 
 # Lint and format
-ruff check .
+make lint          # or: uv run ruff check .
+make format        # or: uv run ruff format .
 ruff format .
 
 # Serve documentation
@@ -199,6 +212,25 @@ The template includes four workflows:
 2. **Build** (`build.yml`): Build packages across multiple OS/Python versions
 3. **Publish** (`publish.yml`): Publish to PyPI on release
 4. **Docs** (`docs.yml`): Deploy documentation to GitHub Pages
+
+## Template Synchronization
+
+Projects generated from this template can stay synchronized with template updates using [Cruft](https://cruft.github.io/cruft/):
+
+### Setup (included automatically)
+Cruft is included in the generated project's development dependencies and configured with a `.cruft.json` file.
+
+### Checking for Updates
+```bash
+uv run cruft check
+```
+
+### Applying Updates
+```bash
+uv run cruft update
+```
+
+This will apply template changes while preserving your customizations. See the generated project's documentation for detailed guidance.
 
 ## Best Practices Included
 

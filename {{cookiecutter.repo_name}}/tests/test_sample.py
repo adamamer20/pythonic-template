@@ -26,7 +26,7 @@ def test_example_function():
     assert True
 
 
-@pytest.mark.integration 
+@pytest.mark.integration
 def test_example_integration():
     """Example integration test - replace with your actual tests."""
     # This is a placeholder test - replace with your actual test logic
