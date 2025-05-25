@@ -1,0 +1,20 @@
+{
+    "project_name": "My Amazing Library",
+    "package_name": "{{ cookiecutter.project_name|lower|replace(' ', '_')|replace('-', '_') }}",
+    "repo_name": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
+    "author_name": "Adam Amer",
+    "author_email": "adam@example.com",
+    "github_username": "adamamer20",
+    "python_version": "3.12",
+    "initial_version": "0.1.0",
+    "license": [
+        "MIT",
+        "Apache-2.0",
+        "BSD-3-Clause"
+    ],
+    "use_docker": [
+        "n",
+        "y"
+    ],
+    "project_short_description": "A modern Python package"
+}
