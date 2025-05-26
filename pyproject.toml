@@ -38,7 +38,7 @@ classifiers = [
     "Topic :: Utilities"
 ]
 dependencies = [
-    "cookiecutter>=2.6.0"
+    "cookiecutter>=2.6.0",
 ]
 
 [project.urls]
@@ -50,13 +50,14 @@ Changelog = "https://github.com/adamamer20/pythonic-template/blob/main/CHANGELOG
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0.0",
-    "pytest-cov>=4.0.0",
-    "ruff>=0.8.0",
-    "pre-commit>=3.6.0",
-    "mkdocs-material>=9.5.0",
-    "mkdocstrings[python]>=0.24.0",
-    "cruft>=2.15.0"
+    "cruft>=2.16.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.14",
+    "mkdocstrings[python]>=0.29.1",
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.11",
 ]
 
 [build-system]
