@@ -32,47 +32,47 @@ def run_command(
 def main():
     """Initialize the project after generation."""
     project_dir = Path.cwd()
-    print(f"🚀 Initializing project in {project_dir}")
+    print(f"[INIT] Initializing project in {project_dir}")
 
     # Initialize git repository
     try:
         run_command("git init -b main")
-        print("✅ Git repository initialized")
+        print("[OK] Git repository initialized")
     except subprocess.CalledProcessError:
-        print("⚠️  Git initialization failed - you may need to install git")
+        print("[WARN] Git initialization failed - you may need to install git")
 
     # Check if uv is available, install if not
     uv_available = False
     try:
         run_command("uv --version")
         uv_available = True
-        print("✅ uv package manager detected")
+        print("[OK] uv package manager detected")
     except subprocess.CalledProcessError:
-        print("📦 Installing uv package manager...")
+        print("[INSTALL] Installing uv package manager...")
         try:
             # Install uv via pipx
             run_command("pip install --user pipx")
             run_command("pipx install uv")
             uv_available = True
-            print("✅ uv installed successfully")
+            print("[OK] uv installed successfully")
         except subprocess.CalledProcessError:
-            print("⚠️  uv installation failed - falling back to pip")
+            print("[WARN] uv installation failed - falling back to pip")
 
     # Sync dependencies and install pre-commit
     try:
         if uv_available:
-            print("📦 Syncing dependencies with uv...")
+            print("[INSTALL] Syncing dependencies with uv...")
             run_command("uv sync --all-extras")
             run_command("uv tool install pre-commit")
         else:
-            print("📦 Installing dependencies with pip...")
+            print("[INSTALL] Installing dependencies with pip...")
             run_command("pip install -e .[dev]")
             run_command("pip install pre-commit")
 
         run_command("pre-commit install")
-        print("✅ Pre-commit hooks installed")
+        print("[OK] Pre-commit hooks installed")
     except subprocess.CalledProcessError:
-        print("⚠️  Dependency installation failed")
+        print("[WARN] Dependency installation failed")
 
     # Create initial commit
     try:
@@ -81,18 +81,18 @@ def main():
             run_command(
                 'git commit -m "Initial commit from cookiecutter template"', check=False
             )
-            print("✅ Initial commit created")
+            print("[OK] Initial commit created")
         except subprocess.CalledProcessError:
             # Pre-commit might modify files and fail the commit
-            print("⚠️  Initial commit attempt with pre-commit failed, retrying...")
+            print("[WARN] Initial commit attempt with pre-commit failed, retrying...")
             run_command("git add .")
             run_command(
                 'git commit -m "Initial commit from cookiecutter template"', check=False
             )
     except subprocess.CalledProcessError:
-        print("⚠️  Initial commit failed")
+        print("[WARN] Initial commit failed")
 
-    print("\n🎉 Project successfully initialized!")
+    print("\n[SUCCESS] Project successfully initialized!")
     print("\nNext steps:")
     print("1. Run tests:")
     print("   pytest")
@@ -103,7 +103,7 @@ def main():
     # Optional Docker setup
     use_docker = "{{ cookiecutter.use_docker }}"
     if use_docker == "y":
-        print("\n🐳 Docker support was enabled")
+        print("\n[DOCKER] Docker support was enabled")
         print("   You can build the development container with:")
         print("   docker build -t {{ cookiecutter.repo_name }}-dev .")
 
