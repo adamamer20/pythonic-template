@@ -1,0 +1,99 @@
+name: Template Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  validate-template:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.12']
+        use-docker: ['y', 'n']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install template dependencies
+        run: uv pip install --system -e .[dev]
+
+      - name: Lint template files
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Generate test project
+        run: |
+          cookiecutter . --no-input \
+            python_version=${{ matrix.python-version }} \
+            use_docker=${{ matrix.use-docker }} \
+            --output-dir /tmp/test-projects
+
+      - name: Test generated project
+        working-directory: /tmp/test-projects/my-amazing-library
+        run: |
+          # Install uv in the generated project
+          uv sync --all-extras
+          
+          # Run linting
+          uv run ruff check .
+          uv run ruff format --check .
+          
+          # Run tests
+          uv run pytest -v
+          
+          # Test building the package
+          uv build
+
+      - name: Test Docker build (if enabled)
+        if: matrix.use-docker == 'y'
+        working-directory: /tmp/test-projects/my-amazing-library
+        run: |
+          # Test multi-stage builds
+          docker build --target builder -t test-builder .
+          docker build --target runtime -t test-runtime .
+          docker build --target development -t test-dev .
+
+  test-hooks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test post-generation hook
+        run: |
+          cd /tmp
+          cookiecutter ${{ github.workspace }} --no-input
+          cd my-amazing-library
+          
+          # Verify git was initialized
+          test -d .git
+          
+          # Verify initial commit exists
+          git log --oneline | head -1
+          
+          # Verify pre-commit is configured
+          test -f .pre-commit-config.yaml
