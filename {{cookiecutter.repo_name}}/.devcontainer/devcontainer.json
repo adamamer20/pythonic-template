@@ -31,5 +31,8 @@
     "postCreateCommand": "fish -c 'echo Welcome to {{ cookiecutter.project_name }} development environment!'",
     "remoteUser": "dev"
 }
-{%- endif -%
+{% else -%
+}
+{}
+{% endif -%
 }
