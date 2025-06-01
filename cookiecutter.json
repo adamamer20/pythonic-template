@@ -1,4 +1,7 @@
 {
+    "_copy_without_render": [
+        ".github/workflows/*"
+    ],
     "project_name": "My Amazing Library",
     "package_name": "{{ cookiecutter.project_name|lower|replace(' ', '_')|replace('-', '_') }}",
     "repo_name": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
