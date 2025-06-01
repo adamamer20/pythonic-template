@@ -1,5 +1,4 @@
-// filepath: /home/adam/projects/pythonic-template/{{cookiecutter.repo_name}}/.devcontainer/devcontainer.json.tmpl
-{%- if cookiecutter.use_docker == 'y' -%
+{% if cookiecutter.use_docker == 'y' -%
 }
 {
     "name": "{{ cookiecutter.project_name }} Dev Container",
@@ -31,5 +30,8 @@
     "postCreateCommand": "fish -c 'echo Welcome to {{ cookiecutter.project_name }} development environment!'",
     "remoteUser": "dev"
 }
-{%- endif -%
+{% else -%
+}
+{}
+{% endif -%
 }
