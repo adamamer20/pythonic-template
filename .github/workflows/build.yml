@@ -45,12 +45,12 @@ jobs:
         cache: 'pip'
     - name: Install uv
       run: pip install uv
-    - name: Install mesa-frames
+    - name: Install pythonic-template
       # See https://github.com/astral-sh/uv/issues/1945
       run: |
         uv pip install --system .[dev]
     - name: Test with pytest
-      run: pytest --durations=10 --cov=mesa_frames tests/ --cov-report=xml
+      run: pytest --durations=10 --cov=pythonic-template tests/ --cov-report=xml
     - if: matrix.os == 'ubuntu'
       name: Codecov
       uses: codecov/codecov-action@v4
