@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: File a bug report for mesa-frames
+description: File a bug report
 title: "[Bug]: "
 labels: ["triage", "bug"]
 assignees: []

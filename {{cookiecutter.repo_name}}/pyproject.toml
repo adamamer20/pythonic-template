@@ -29,7 +29,7 @@ classifiers = [
 ]
 dependencies = []
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "ruff>=0.8.0",
     "pytest>=8.0.0",
@@ -41,6 +41,8 @@ dev = [
     "python-dotenv>=1.0.0",
     "cruft>=2.15.0",
 ]
+
+[project.optional-dependencies]
 data = [
     "polars>=0.20.0",
     "numpy>=1.24.0",
