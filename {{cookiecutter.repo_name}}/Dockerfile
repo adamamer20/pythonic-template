@@ -1,7 +1,7 @@
 {%- if cookiecutter.use_docker == 'y' %}
 # Multi-stage build for {{ cookiecutter.project_name }}
 # Stage 1: Builder - Install dependencies and build wheel
-FROM python:{{ cookiecutter.python_version }}-slim as builder
+FROM python:3.12-slim as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -34,7 +34,7 @@ COPY README.md LICENSE ./
 RUN uv build --wheel
 
 # Stage 2: Runtime - Minimal production image
-FROM python:{{ cookiecutter.python_version }}-slim as runtime
+FROM python:3.12-slim as runtime
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1

@@ -8,9 +8,11 @@
     "author_name": "Adam Amer",
     "author_email": "adam@example.com",
     "github_username": "adamamer20",
-    "python_version": "3.12",
     "initial_version": "0.1.0",
-    "ruff_version": "v0.11.13",
+    "ai_project": [
+        "n",
+        "y"
+    ],
     "license": [
         "MIT",
         "Apache-2.0",

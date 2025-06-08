@@ -198,7 +198,6 @@ def test_custom_parameters():
                 "project_name=Custom Project",
                 "author_name=Test Author",
                 "author_email=test@example.com",
-                "python_version=3.11",
                 f"--output-dir={temp_dir}",
             ],
             check=True,
@@ -214,6 +213,31 @@ def test_custom_parameters():
         assert "custom-project" in content
         assert "Test Author" in content
         assert "test@example.com" in content
+
+
+def test_ai_project_optional_dependencies():
+    """Ensure AI project extras are included when enabled."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter",
+                str(Path(__file__).parent.parent),
+                "--no-input",
+                "ai_project=y",
+                f"--output-dir={temp_dir}",
+            ],
+            check=True,
+        )
+
+        pyproject_path = (
+            Path(temp_dir)
+            / "my-amazing-library"
+            / "pyproject.toml"
+        )
+        content = pyproject_path.read_text()
+        assert "[project.optional-dependencies]" in content
+        assert "polars" in content
+        assert "torch" in content
 
 
 if __name__ == "__main__":

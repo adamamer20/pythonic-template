@@ -10,9 +10,8 @@
             "author_name": "{{ cookiecutter.author_name }}",
             "author_email": "{{ cookiecutter.author_email }}",
             "github_username": "{{ cookiecutter.github_username }}",
-            "python_version": "{{ cookiecutter.python_version }}",
             "initial_version": "{{ cookiecutter.initial_version }}",
-            "ruff_version": "{{ cookiecutter.ruff_version }}",
+            "ai_project": "{{ cookiecutter.ai_project }}",
             "license": "{{ cookiecutter.license }}",
             "use_docker": "{{ cookiecutter.use_docker }}",
             "project_short_description": "{{ cookiecutter.project_short_description }}"
