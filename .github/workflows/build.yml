@@ -48,7 +48,9 @@ jobs:
     - name: Install uv via GitHub Action
       uses: astral-sh/setup-uv@v6
     - name: Install pythonic-template + dev dependencies
-      run: uv pip install --system .[dev]
+      run: |
+        uv pip install --system .
+        uv pip install --group dev --system
     - name: Test with pytest
       run: pytest --durations=10 --cov=pythonic-template tests/ --cov-report=xml
     - if: matrix.os == 'ubuntu'
