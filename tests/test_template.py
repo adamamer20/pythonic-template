@@ -3,10 +3,12 @@ Test suite for the pythonic-template cookiecutter template.
 Tests template generation and validates the resulting project structure.
 """
 
+import os
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -14,6 +16,16 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from hooks.post_gen_project import run_command  # noqa: E402
+
+
+def run_subprocess(cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+    """Run subprocess without coverage environment variables."""
+    env = os.environ.copy()
+    env.pop("COVERAGE_FILE", None)
+    env.pop("COVERAGE_PROCESS_START", None)
+    kwargs.setdefault("env", env)
+    check_flag = kwargs.pop("check", False)
+    return subprocess.run(cmd, check=check_flag, **kwargs)
 
 
 def test_run_command_basic():
@@ -26,7 +38,7 @@ def test_template_generation_basic():
     """Test basic template generation with default parameters."""
     with tempfile.TemporaryDirectory() as temp_dir:
         # Generate project
-        subprocess.run(
+        run_subprocess(
             [
                 "cookiecutter",
                 str(Path(__file__).parent.parent),
@@ -60,7 +72,7 @@ def test_template_generation_basic():
 def test_template_generation_with_docker():
     """Test template generation with Docker enabled."""
     with tempfile.TemporaryDirectory() as temp_dir:
-        subprocess.run(
+        run_subprocess(
             [
                 "cookiecutter",
                 str(Path(__file__).parent.parent),
@@ -90,7 +102,7 @@ def test_generated_project_structure():
     """Test that generated project has correct structure and can be built."""
     with tempfile.TemporaryDirectory() as temp_dir:
         # Generate project
-        subprocess.run(
+        run_subprocess(
             [
                 "cookiecutter",
                 str(Path(__file__).parent.parent),
@@ -103,7 +115,7 @@ def test_generated_project_structure():
         project_path = Path(temp_dir) / "my-amazing-library"
 
         # Test that the project can be installed and tested
-        result = subprocess.run(
+        result = run_subprocess(
             ["uv", "sync", "--all-extras"],
             cwd=project_path,
             capture_output=True,
@@ -115,7 +127,7 @@ def test_generated_project_structure():
             pytest.skip("uv not available, skipping dependency installation test")
 
         # Run tests
-        test_result = subprocess.run(
+        test_result = run_subprocess(
             ["uv", "run", "pytest", "-v"],
             cwd=project_path,
             capture_output=True,
@@ -126,7 +138,7 @@ def test_generated_project_structure():
         assert test_result.returncode == 0, f"Tests failed: {test_result.stderr}"
 
         # Check linting passes
-        lint_result = subprocess.run(
+        lint_result = run_subprocess(
             ["uv", "run", "ruff", "check", "."],
             cwd=project_path,
             capture_output=True,
@@ -140,7 +152,7 @@ def test_generated_project_structure():
 def test_pyproject_toml_validity():
     """Test that generated pyproject.toml is valid."""
     with tempfile.TemporaryDirectory() as temp_dir:
-        subprocess.run(
+        run_subprocess(
             [
                 "cookiecutter",
                 str(Path(__file__).parent.parent),
@@ -178,7 +190,7 @@ def test_pyproject_toml_validity():
 def test_custom_parameters():
     """Test template generation with custom parameters."""
     with tempfile.TemporaryDirectory() as temp_dir:
-        subprocess.run(
+        run_subprocess(
             [
                 "cookiecutter",
                 str(Path(__file__).parent.parent),

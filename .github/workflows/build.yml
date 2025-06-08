@@ -52,7 +52,7 @@ jobs:
         uv pip install --system .
         uv pip install --group dev --system
     - name: Test with pytest
-      run: pytest --durations=10 --cov=hooks tests/ --cov-report=xml
+      run: pytest --durations=10 --cov=hooks --cov-branch tests/ --cov-report=xml
     - if: matrix.os == 'ubuntu'
       name: Codecov
       uses: codecov/codecov-action@v4
