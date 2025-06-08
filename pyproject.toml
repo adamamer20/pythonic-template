@@ -114,5 +114,6 @@ testpaths = ["tests"]
 filterwarnings = [
     "error",
     "ignore::UserWarning",
-    "ignore::DeprecationWarning"
+    "ignore::DeprecationWarning",
+    "ignore::coverage.exceptions.CoverageWarning"
 ]

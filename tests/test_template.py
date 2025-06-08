@@ -4,10 +4,22 @@ Tests template generation and validates the resulting project structure.
 """
 
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
 import pytest
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from hooks.post_gen_project import run_command  # noqa: E402
+
+
+def test_run_command_basic():
+    """Ensure run_command executes a simple command."""
+    result = run_command("echo hello", check=False)
+    assert result.returncode == 0
 
 
 def test_template_generation_basic():
