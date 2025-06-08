@@ -8,7 +8,7 @@ The Pythonic Template generates a well-organized Python project with modern tool
 
 ## Complete Directory Tree
 
-```
+```text
 my-python-project/                 # Root project directory
 ├── .github/                       # GitHub-specific files
 │   ├── ISSUE_TEMPLATE/            # Issue templates
@@ -103,7 +103,7 @@ dependencies = [
     # Runtime dependencies
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
@@ -257,7 +257,6 @@ See [CONTRIBUTING.md](https://github.com/adamamer20/pythonic-template/blob/main/
 ## License
 
 This project is licensed under the MIT License - see [LICENSE](https://github.com/adamamer20/pythonic-template/blob/main/LICENSE) for details.
-```
 
 ## Source Code Structure
 
@@ -293,12 +292,12 @@ from typing import Optional, Sequence
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """Main entry point for the application.
-    
+
     Parameters
     ----------
     argv : Optional[Sequence[str]]
         Command line arguments. If None, uses sys.argv.
-        
+
     Returns
     -------
     int
@@ -312,9 +311,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         action="version",
         version=f"%(prog)s {__version__}"
     )
-    
+
     args = parser.parse_args(argv)
-    
+
     print("Hello from My Python Project!")
     return 0
 
@@ -336,7 +335,7 @@ from typing import Any, Protocol
 
 class Processor(Protocol):
     """Protocol for data processors."""
-    
+
     def process(self, data: Any) -> Any:
         """Process the input data."""
         ...
@@ -344,30 +343,30 @@ class Processor(Protocol):
 
 class BaseProcessor(ABC):
     """Abstract base class for processors.
-    
+
     This class provides a template for implementing
     data processing components.
     """
-    
+
     def __init__(self, name: str) -> None:
         """Initialize the processor.
-        
+
         Parameters
         ----------
         name : str
             Name of the processor.
         """
         self.name = name
-    
+
     @abstractmethod
     def process(self, data: Any) -> Any:
         """Process the input data.
-        
+
         Parameters
         ----------
         data : Any
             Input data to process.
-            
+
         Returns
         -------
         Any
@@ -389,7 +388,7 @@ from typing import Union
 
 def setup_logging(level: str = "INFO") -> None:
     """Set up logging configuration.
-    
+
     Parameters
     ----------
     level : str, default="INFO"
@@ -403,12 +402,12 @@ def setup_logging(level: str = "INFO") -> None:
 
 def ensure_directory(path: Union[str, Path]) -> Path:
     """Ensure a directory exists, creating it if necessary.
-    
+
     Parameters
     ----------
     path : Union[str, Path]
         Directory path to ensure exists.
-        
+
     Returns
     -------
     Path
@@ -437,7 +436,7 @@ from typing import Generator
 @pytest.fixture
 def temp_dir() -> Generator[Path, None, None]:
     """Create a temporary directory for testing.
-    
+
     Yields
     ------
     Path
@@ -450,7 +449,7 @@ def temp_dir() -> Generator[Path, None, None]:
 @pytest.fixture
 def sample_data() -> dict:
     """Sample data for testing.
-    
+
     Returns
     -------
     dict
@@ -484,7 +483,7 @@ def test_main_with_version(capsys):
     """Test main with --version flag."""
     with pytest.raises(SystemExit) as exc_info:
         main(["--version"])
-    
+
     assert exc_info.value.code == 0
     captured = capsys.readouterr()
     assert "0.1.0" in captured.out
@@ -494,7 +493,7 @@ def test_main_help(capsys):
     """Test main with --help flag."""
     with pytest.raises(SystemExit) as exc_info:
         main(["--help"])
-    
+
     assert exc_info.value.code == 0
     captured = capsys.readouterr()
     assert "A modern Python project" in captured.out
@@ -551,7 +550,6 @@ main()
 - [GitHub Issues](https://github.com/your-name/my-python-project/issues)
 - [Documentation](https://your-name.github.io/my-python-project)
 - [Discussions](https://github.com/your-name/my-python-project/discussions)
-```
 
 ### `mkdocs.yml`
 
@@ -646,30 +644,30 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    
+
     - name: Install UV
       run: pip install uv
-    
+
     - name: Install dependencies
       run: uv pip install -e .[dev]
-    
+
     - name: Run linting
       run: ruff check .
-    
+
     - name: Run formatting check
       run: ruff format --check .
-    
+
     - name: Run type checking
       run: mypy src
-    
+
     - name: Run tests
       run: pytest --cov=src --cov-report=xml
-    
+
     - name: Upload coverage
       uses: codecov/codecov-action@v3
       with:

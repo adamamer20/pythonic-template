@@ -159,7 +159,8 @@ def test_pyproject_toml_validity():
         project = pyproject["project"]
         assert project["name"] == "my_amazing_library"  # Package name is normalized
         assert project["requires-python"] == ">=3.9"
-        assert "dev" in project["optional-dependencies"]
+        assert "dependency-groups" in pyproject
+        assert "dev" in pyproject["dependency-groups"]
 
 
 def test_custom_parameters():
