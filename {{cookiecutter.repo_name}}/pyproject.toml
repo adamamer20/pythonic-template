@@ -42,6 +42,7 @@ dev = [
     "cruft>=2.15.0",
 ]
 
+{% if cookiecutter.ai_project == 'y' %}
 [project.optional-dependencies]
 data = [
     "polars>=0.20.0",
@@ -52,6 +53,7 @@ ml = [
     "torch>=2.0.0",
     "transformers>=4.30.0",
 ]
+{% endif %}
 
 [project.urls]
 Homepage = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}"
