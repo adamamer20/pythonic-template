@@ -38,7 +38,7 @@ my-project/
 ├── 📄 mkdocs.yml              # Documentation config
 ├── 📄 .pre-commit-config.yaml # Pre-commit hooks
 ├── 📄 .gitignore              # Git ignore rules
-├── 📄 Dockerfile              # Docker container
+├── 📄 .devcontainer/Dockerfile # Docker container
 └── 📄 .env.example            # Environment template
 ```
 

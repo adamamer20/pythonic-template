@@ -61,7 +61,8 @@ my-python-project/                 # Root project directory
 │   └── extensions.json            # Recommended extensions
 ├── .gitignore                     # Git ignore rules
 ├── .pre-commit-config.yaml        # Pre-commit hooks
-├── Dockerfile                     # Docker image definition
+├── .devcontainer/
+│   └── Dockerfile                 # Docker image definition
 ├── docker-compose.yml             # Docker Compose setup
 ├── LICENSE                        # License file
 ├── README.md                      # Project README

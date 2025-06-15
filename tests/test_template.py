@@ -88,14 +88,45 @@ def test_template_generation_with_docker():
         project_path = Path(temp_dir) / "my-amazing-library"
 
         # Check Docker files exist
-        assert (project_path / "Dockerfile").exists()
+        assert (project_path / ".devcontainer/Dockerfile").exists()
         assert (project_path / ".devcontainer/devcontainer.json").exists()
 
         # Verify Dockerfile has multi-stage build
-        dockerfile_content = (project_path / "Dockerfile").read_text()
+        dockerfile_content = (project_path / ".devcontainer/Dockerfile").read_text()
         assert "as builder" in dockerfile_content
         assert "as runtime" in dockerfile_content
         assert "as development" in dockerfile_content
+
+
+def test_template_generation_without_docker():
+    """Docker support disabled should yield empty devcontainer."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter",
+                str(Path(__file__).parent.parent),
+                "--no-input",
+                "use_docker=n",
+                f"--output-dir={temp_dir}",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        project_path = Path(temp_dir) / "my-amazing-library"
+        dockerfile_path = project_path / ".devcontainer/Dockerfile"
+        devcontainer_json = project_path / ".devcontainer/devcontainer.json"
+
+        # Devcontainer folder should exist for VS Code settings
+        assert dockerfile_path.exists()
+        assert devcontainer_json.exists()
+
+        # Dockerfile should be empty when Docker is disabled
+        assert dockerfile_path.read_text().strip() == ""
+
+        # devcontainer.json should contain an empty object
+        assert devcontainer_json.read_text().strip() == "{}"
 
 
 def test_generated_project_structure():
