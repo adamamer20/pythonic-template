@@ -17,10 +17,8 @@ import os
 
 if os.getenv("DEV_TYPECHECK", "0") == "1":
     try:
-        from typeguard.importhook import install_import_hook
-        # Check *this* package (children included) on import
-        install_import_hook(__name__)
+        from beartype.claw import beartype_this_package
+        beartype_this_package()
     except ImportError:
-        # typeguard not available, skip type checking
         pass
 # ------------------------------------------------------------------------

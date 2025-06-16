@@ -37,7 +37,7 @@ dev = [
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
     "pre-commit>=3.6.0",
-    "typeguard>=4.0.0",
+    "beartype>=0.18.0",
     "python-dotenv>=1.0.0",
     "cruft>=2.15.0",
 ]

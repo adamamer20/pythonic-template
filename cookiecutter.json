@@ -1,6 +1,6 @@
 {
     "_copy_without_render": [
-        ".github/workflows/*"
+".github/workflows/*.yml"
     ],
     "project_name": "My Amazing Library",
     "package_name": "{{ cookiecutter.project_name|lower|replace(' ', '_')|replace('-', '_') }}",

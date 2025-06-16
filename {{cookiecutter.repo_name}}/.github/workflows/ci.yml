@@ -53,8 +53,49 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: false
 
+  docker-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if Docker is enabled
+        id: docker-check
+        run: |
+          if [ -f "Dockerfile" ]; then
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "enabled=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Docker Buildx
+        if: steps.docker-check.outputs.enabled == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Test Docker build - deps stage
+        if: steps.docker-check.outputs.enabled == 'true'
+        run: docker build --target deps -t test-deps .
+
+      - name: Test Docker build - builder stage
+        if: steps.docker-check.outputs.enabled == 'true'
+        run: docker build --target builder -t test-builder .
+
+      - name: Test Docker build - runtime stage
+        if: steps.docker-check.outputs.enabled == 'true'
+        run: docker build --target runtime -t test-runtime .
+
+      - name: Test Docker build - development stage
+        if: steps.docker-check.outputs.enabled == 'true'
+        run: docker build --target development -t test-development .
+
+      - name: Test docker-compose for devcontainer
+        if: steps.docker-check.outputs.enabled == 'true'
+        run: |
+          cd .devcontainer
+          docker-compose build
+          docker-compose config
+
   auto-merge:
-    needs: test
+    needs: [test, docker-test]
     runs-on: ubuntu-latest
     if: |
       github.actor == 'dependabot[bot]' &&

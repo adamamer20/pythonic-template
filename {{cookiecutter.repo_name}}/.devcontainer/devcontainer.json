@@ -1,9 +1,12 @@
-{%- if cookiecutter.use_docker == 'y' -%}
+{%- if cookiecutter.use_docker == 'y' %}
 {
-    "name": "{{ cookiecutter.project_name }} Dev Container",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
+    "name": "{{cookiecutter.project_name}} Dev Container",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/{{cookiecutter.repo_name}}",
+
+    "remoteUser": "dev",
+
     "customizations": {
         "vscode": {
             "extensions": [
@@ -14,21 +17,26 @@
                 "github.copilot",
                 "github.copilot-chat",
                 "tamasfe.even-better-toml",
-                "redhat.vscode-yaml"
+                "redhat.vscode-yaml",
+                "quarto.quarto",
+                "RooVeterinaryInc.roo-cline",
+                "ms-azuretools.vscode-docker",
+                "dvirtz.parquet-viewer",
+                "eamodio.gitlens"
             ],
             "settings": {
-                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.defaultInterpreterPath": "/app/.venv/bin/python",
                 "python.terminal.activateEnvironment": false,
                 "terminal.integrated.defaultProfile.linux": "fish"
             }
         }
     },
     "forwardPorts": [
-        8000
+        8000,
+        6333,
+        11434
     ],
-    "postCreateCommand": "fish -c 'echo Welcome to {{ cookiecutter.project_name }} development environment!'",
-    "remoteUser": "dev"
+    "postCreateCommand": "uv sync --dev && pre-commit install && fish -c 'echo Welcome to {{cookiecutter.project_name}} development environment!'",
+    "postStartCommand": "ollama serve --listen 0.0.0.0:11434 & echo 'Ollama server starting in background. Access at http://localhost:11434 from inside the container.'"
 }
-{%- else -%}
-{}
-{%- endif -%} 
+{%- endif %}

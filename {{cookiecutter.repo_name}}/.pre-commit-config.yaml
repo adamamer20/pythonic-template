@@ -38,7 +38,7 @@ repos:
 
   - repo: local
     hooks:
-      - id: typeguard-test
+      - id: beartype-test
         name: runtime type-check (pytest)
         entry: bash -c 'DEV_TYPECHECK=1 pytest -q --tb=short'
         language: system

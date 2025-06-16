@@ -49,3 +49,31 @@ jobs:
         with:
           name: wheels
           path: dist/*.whl
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if Docker is enabled
+        id: docker-check
+        run: |
+          if [ -f "Dockerfile" ]; then
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "enabled=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Docker Buildx
+        if: steps.docker-check.outputs.enabled == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and test all Docker stages
+        if: steps.docker-check.outputs.enabled == 'true'
+        run: |
+          echo "Testing Docker build stages..."
+          docker build --target deps -t test-deps .
+          docker build --target builder -t test-builder .
+          docker build --target runtime -t test-runtime .
+          docker build --target development -t test-development .
+          echo "All Docker stages built successfully!"
