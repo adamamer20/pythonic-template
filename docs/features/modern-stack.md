@@ -25,7 +25,7 @@ uv add requests
 # Install specific version
 uv add "numpy>=1.24.0"
 
-# Remove dependency  
+# Remove dependency
 uv remove requests
 ```
 
@@ -39,7 +39,7 @@ dependencies = [
     "click>=8.0.0",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest>=8.0.0",
     "ruff>=0.8.0",
@@ -139,13 +139,13 @@ from my_package import process_data
 
 class TestProcessData:
     """Test the process_data function."""
-    
+
     def test_basic_functionality(self):
         """Test basic data processing."""
         input_data = [{"name": "test", "value": 42}]
         result = process_data(input_data)
         assert len(result) == 1
-    
+
     @pytest.mark.parametrize("input_val,expected", [
         ([], []),
         ([{"key": "val"}], ["val"]),
@@ -155,7 +155,7 @@ class TestProcessData:
         """Test with multiple parameter combinations."""
         result = process_data(input_val)
         assert result == expected
-    
+
     def test_error_handling(self):
         """Test error conditions."""
         with pytest.raises(ValueError, match="Invalid input"):
@@ -260,19 +260,19 @@ def load_config(
     defaults: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Union[str, int, bool]]:
     """Load configuration from file.
-    
+
     Parameters
     ----------
     config_path : Path
         Path to configuration file
     defaults : Optional[Dict[str, Any]], default=None
         Default configuration values
-        
+
     Returns
     -------
     Dict[str, Union[str, int, bool]]
         Loaded configuration
-        
+
     Raises
     ------
     FileNotFoundError
@@ -466,7 +466,7 @@ flake8 + isort + black: ~5s
 mypy: ~10s
 Total: ~45s
 
-# Modern stack timing  
+# Modern stack timing
 uv pip install: ~3s
 ruff check + format: ~0.5s
 mypy: ~10s
