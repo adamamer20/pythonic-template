@@ -18,7 +18,9 @@
                 "github.copilot-chat",
                 "tamasfe.even-better-toml",
                 "redhat.vscode-yaml",
+                {%- if cookiecutter.include_paper_support == 'y' %}
                 "quarto.quarto",
+                {%- endif %}
                 "RooVeterinaryInc.roo-cline",
                 "ms-azuretools.vscode-docker",
                 "dvirtz.parquet-viewer",

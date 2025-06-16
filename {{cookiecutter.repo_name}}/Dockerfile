@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+{%- if cookiecutter.include_paper_support == 'y' %}
 # Install latest Quarto CLI dynamically
 RUN QUARTO_TAG=$(curl -s https://api.github.com/repos/quarto-dev/quarto-cli/releases/latest \
                    | grep -Po '"tag_name": "\K.*?(?=")') \
@@ -25,6 +26,7 @@ RUN QUARTO_TAG=$(curl -s https://api.github.com/repos/quarto-dev/quarto-cli/rele
  && ln -s /usr/local/quarto/bin/quarto /usr/local/bin/quarto \
  && rm quarto.tar.gz \
  && quarto --version
+{%- endif %}
 
 # Install uv from source
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh

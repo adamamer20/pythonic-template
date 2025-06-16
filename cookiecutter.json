@@ -20,5 +20,9 @@
         "n",
         "y"
     ],
+    "include_paper_support": [
+        "n",
+        "y"
+    ],
     "project_short_description": "A modern Python package"
 }
