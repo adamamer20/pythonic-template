@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  development:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      target: development
+    volumes:
+      - ..:/workspace:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dev-venv:/app/.venv
+      - dev-npm:/home/dev/.local
+    environment:
+      - PYTHONPATH=/workspace/src
+      - UV_CACHE_DIR=/workspace/.uv-cache
+    ports:
+      - "8000:8000"
+    networks:
+      - dev-network
+    command: sleep infinity
+    user: dev
+    stdin_open: true
+    tty: true
+
+{% if 'roo_code' in cookiecutter.ai_agents or cookiecutter.ai_agents == 'all' %}
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - dev-network
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - dev-network
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+{% endif %}
+
+volumes:
+  dev-venv:
+  dev-npm:
+{% if 'roo_code' in cookiecutter.ai_agents or cookiecutter.ai_agents == 'all' %}
+  qdrant-data:
+  ollama-data:
+{% endif %}
+
+networks:
+  dev-network:
+    driver: bridge

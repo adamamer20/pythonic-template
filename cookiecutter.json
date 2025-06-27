@@ -16,9 +16,19 @@
         "Apache-2.0",
         "BSD-3-Clause"
     ],
-    "use_docker": [
-        "n",
-        "y"
+    "project_type": [
+        "standard",
+        "paper"
+    ],
+    "ai_agents": [
+        "all",
+        "claude_code",
+        "openai_codex", 
+        "roo_code",
+        "claude_code,openai_codex",
+        "claude_code,roo_code",
+        "openai_codex,roo_code",
+        "none"
     ],
     "project_short_description": "A modern Python package"
 }

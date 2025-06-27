@@ -1,6 +1,6 @@
 # Pythonic Template 🐍
 
-A modern, comprehensive Cookiecutter template for Python projects that follows best practices and includes everything you need for professional Python development.
+A modern, comprehensive Cookiecutter template for Python projects that follows best practices and includes everything you need for professional Python development - now with **advanced devcontainer support**, **AI agent integration**, and **academic paper workflows**.
 
 ## Features
 
@@ -10,7 +10,32 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 - **Ruff** for lightning-fast linting and formatting
 - **pytest** with comprehensive test configuration
 - **MkDocs Material** for beautiful documentation
-- **typeguard** for runtime type checking
+- **beartype** for runtime type checking
+
+### 🤖 **AI-Powered Development**
+
+- **Claude Code CLI** integration for AI-assisted coding
+- **OpenAI Codex** support via AGENTS.md
+- **Roo Code** with Qdrant vector database and Ollama
+- Configurable AI agent selection (all, specific agents, or none)
+- Automatic devcontainer setup for selected agents
+
+### 🐳 **Advanced Container Development**
+
+- **Multi-stage Dockerfile** with optimized caching
+- **Docker Compose** orchestration for development services
+- **VS Code devcontainer** with proper port forwarding
+- **Conditional installations** based on project configuration
+- **Docker-in-Docker** support for containerized workflows
+
+### 📄 **Academic Paper Support**
+
+- **Quarto** integration for scientific paper authoring
+- **Marimo** for interactive data analysis and visualization
+- **Automatic paper rendering** to HTML and PDF
+- **GitHub Actions** for paper deployment
+- **Citation management** with BibTeX support
+- **Mathematical expressions** with MathJax
 
 ### 🛡️ **Quality Assurance**
 
@@ -23,8 +48,8 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 ### 📚 **Documentation & Developer Experience**
 
 - Material for MkDocs with modern theme
-- VS Code configuration and recommended extensions
-- Docker support with dev containers
+- **Makefile-driven development** workflow
+- **Cruft** for template synchronization
 - Environment variable management
 - Professional project structure
 
@@ -59,7 +84,8 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
    - Author information
    - Python version (3.9-3.12, defaults to 3.12)
    - License choice (MIT, Apache-2.0, BSD-3-Clause)
-   - Docker support (optional)
+   - **Project type**: "standard" or "paper" (for academic research)
+   - **AI agents**: Choose from Claude Code, OpenAI Codex, Roo Code, or combinations
 
 4. **Navigate to your new project**:
 
@@ -67,130 +93,161 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
    cd your-new-project
    ```
 
-5. **Dependencies are automatically installed via the post-generation hook**. If needed, manually sync:
+5. **Initialize your development environment**:
 
    ```bash
-   uv sync --all-extras
+   make setup  # Complete environment setup with dependencies and pre-commit
    ```
 
 6. **Start developing**! 🎉
 
    ```bash
+   # Show all available commands (ALWAYS start here!)
+   make help
+
    # Run tests
    make test
 
+   # For paper projects - render your paper
+   make paper-render  # (only available for paper type projects)
+
    # Start coding in src/your_package/
    # Tests go in tests/
+   # Papers go in paper/ (if using paper type)
    ```
 
 ## Template Configuration
 
 The template prompts for these variables:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `project_name` | Human-readable project name | "My Amazing Library" |
-| `package_name` | Python package name (auto-generated) | (derived from project_name) |
-| `repo_name` | Repository name (auto-generated) | (derived from project_name) |
-| `author_name` | Your name | "Adam Amer" |
-| `author_email` | Your email | "<adam@example.com>" |
-| `github_username` | Your GitHub username | "adamamer20" |
-| `python_version` | Minimum Python version | "3.12" |
-| `initial_version` | Starting version | "0.1.0" |
-| `license` | License type | "MIT" |
-| `use_docker` | Include Docker support | "n" |
-| `project_short_description` | Brief description | "A modern Python package" |
+| Variable | Description | Default | Options |
+|----------|-------------|---------|---------|
+| `project_name` | Human-readable project name | "My Amazing Library" | Any string |
+| `package_name` | Python package name (auto-generated) | (derived from project_name) | Auto-generated |
+| `repo_name` | Repository name (auto-generated) | (derived from project_name) | Auto-generated |
+| `author_name` | Your name | "Adam Amer" | Any string |
+| `author_email` | Your email | "adam@example.com" | Any email |
+| `github_username` | Your GitHub username | "adamamer20" | Any username |
+| `python_version` | Minimum Python version | "3.12" | "3.9" to "3.13" |
+| `initial_version` | Starting version | "0.1.0" | Any version string |
+| `license` | License type | "MIT" | MIT, Apache-2.0, BSD-3-Clause |
+| **`project_type`** | **Project type** | **"standard"** | **"standard", "paper"** |
+| **`ai_agents`** | **AI agents to include** | **"all"** | **"all", "claude_code", "openai_codex", "roo_code", combinations, "none"** |
+| `project_short_description` | Brief description | "A modern Python package" | Any string |
 
 ## Generated Project Structure
 
 ```text
 your-project/
+├── .devcontainer/              # 🐳 Advanced development containers
+│   ├── Dockerfile              # Multi-stage container with conditional installs
+│   ├── docker-compose.yml      # Service orchestration (Qdrant, Ollama)
+│   ├── devcontainer.json       # VS Code devcontainer configuration
+│   └── ai-agents-config.json   # AI agent setup configuration
 ├── .github/
-│   ├── workflows/          # CI/CD pipelines
-│   └── dependabot.yml      # Dependency updates
-├── .vscode/               # VS Code configuration
-├── docs/                  # Documentation source
-├── src/your_package/      # Your Python package
-├── tests/                 # Test suite
-├── .env.example          # Environment variables template
-├── .gitignore            # Comprehensive gitignore
-├── .pre-commit-config.yaml # Code quality hooks
-├── .devcontainer/        # Development container config
-│   └── Dockerfile        # Container image
-├── Makefile              # Common development tasks
-├── mkdocs.yml            # Documentation configuration
-├── pyproject.toml        # Project configuration
-└── README.md             # Project documentation
+│   ├── workflows/              # CI/CD pipelines
+│   │   ├── ci.yml              # Standard CI
+│   │   ├── render-paper.yml    # 📄 Paper rendering (paper projects only)
+│   │   └── ...
+│   └── dependabot.yml          # Dependency updates
+├── .roo/                       # 🤖 Roo Code AI configuration (if selected)
+│   └── rules-code/
+│       └── rules.md            # Roo-specific development rules
+├── .vscode/                    # VS Code configuration
+├── docs/                       # Documentation source
+├── paper/                      # 📄 Academic paper (paper projects only)
+│   ├── paper.qmd               # Main paper in Quarto format
+│   └── references.bib          # Bibliography
+├── src/your_package/           # Your Python package
+├── tests/                      # Test suite
+├── .env.example               # Environment variables template
+├── .gitignore                 # Comprehensive gitignore
+├── .pre-commit-config.yaml    # Code quality hooks
+├── .cruft.json                # Template synchronization config
+├── AGENTS.md                  # 🤖 AI agent instructions
+├── Makefile                   # 🔧 CENTRAL command hub (USE THIS!)
+├── mkdocs.yml                 # Documentation configuration
+├── pyproject.toml             # Project configuration
+└── README.md                  # Project documentation
 ```
 
 ## Development Workflow
 
+**CRITICAL: Always use `make` commands for development tasks!**
+
 After generating your project:
 
-### 1. **Environment Setup**
+### 1. **Quick Start**
 
 ```bash
-# Copy environment template
-cp .env.example .env
+# ALWAYS start here - see all available commands
+make help
 
-# Sync dependencies (automatically done by post-gen hook)
-uv sync --all-extras
+# Complete environment setup (replaces multiple manual steps)
+make setup
 
-# Verify pre-commit is installed (automatically done by post-gen hook)
-pre-commit --version
+# Start development
+make dev
 ```
 
-### 2. **Development Commands**
+### 2. **Essential Make Commands**
+
+The Makefile is the **CENTRAL HUB** for all development operations:
 
 ```bash
-# Run tests
-make test          # or: uv run pytest
+# Core workflow
+make setup         # Complete development environment setup
+make test          # Run tests with type checking
+make quick-test    # Fast tests for development
+make check         # Run all quality checks (lint + format + test)
 
-# Run tests with type checking
-make test-type     # or: uv run env DEV_TYPECHECK=1 pytest
+# Development tasks
+make lint          # Run linting and fix issues
+make format        # Format code with ruff
+make quality       # Run all quality checks
 
-# Lint and format
-make lint          # or: uv run ruff check .
-make format        # or: uv run ruff format .
-ruff format .
-
-# Serve documentation
-mkdocs serve
-
-# Run all quality checks
-pre-commit run --all-files
-```
-
-### 3. **Make Commands**
-
-The template includes a comprehensive Makefile:
-
-```bash
-make help          # Show available commands
-make dev-install   # Install development dependencies
-make test          # Run tests
-make test-cov      # Run tests with coverage
-make test-type     # Run tests with type checking
-make lint          # Run linting
-make format        # Format code
-make docs          # Serve documentation
+# Utilities
 make clean         # Clean build artifacts
-make build         # Build package
+make sync          # Sync dependencies
+make upgrade       # Upgrade all dependencies
+make ai-setup      # Set up AI agents (Claude Code CLI, etc.)
 ```
+
+### 3. **Paper Projects (if project_type="paper")**
+
+```bash
+make paper-render   # Render paper to HTML and PDF
+make paper-preview  # Preview paper in browser
+make paper-check    # Check paper for issues
+```
+
+### 4. **AI Agent Integration**
+
+If you selected AI agents during setup:
+
+- **Claude Code CLI**: Available via `claude-code` command
+- **OpenAI Codex**: Uses AGENTS.md for instructions
+- **Roo Code**: Uses `.roo/rules-code/rules.md` + Qdrant + Ollama
+
+The devcontainer automatically configures your selected agents!
 
 ## Key Features Explained
 
 ### 🔍 **Runtime Type Checking**
 
-Set `DEV_TYPECHECK=1` in your `.env` file to enable runtime type validation with typeguard:
+The template uses **beartype** for runtime type safety:
 
 ```python
-# Your code with type hints
+from beartype import beartype
+
+@beartype
 def process_data(items: list[str]) -> dict[str, int]:
     return {item: len(item) for item in items}
 
-# typeguard will validate types at runtime in development
+# beartype provides runtime type validation at function call time
 ```
+
+Set `DEV_TYPECHECK=1` in your `.env` file to enable runtime type validation during testing.
 
 ### 📦 **Modern Package Management**
 
@@ -213,22 +270,48 @@ def process_data(items: list[str]) -> dict[str, int]:
 - **MathJax** support for mathematical expressions
 - **Mermaid** diagrams support
 
-### 🐳 **Docker Support**
+### 🐳 **Advanced Docker Support**
 
-Optional Docker configuration with:
+Multi-stage Docker configuration with:
 
-- Fish shell for better development experience
-- Pre-configured development environment
-- VS Code dev container support
+- **Base, deps, builder, runtime, development** stages for optimal caching
+- **Fish shell** for better development experience
+- **Conditional installations** based on project configuration
+- **Docker Compose** orchestration for complex development environments
+- **VS Code devcontainer** with automatic port forwarding
+- **AI service integration** (Qdrant, Ollama) when using Roo Code
+
+### 🤖 **AI Agent Integration**
+
+Choose your AI development assistants:
+
+- **Claude Code CLI**: Official Anthropic CLI for AI-assisted coding
+- **OpenAI Codex**: Integration via AGENTS.md instructions
+- **Roo Code**: Advanced AI with vector database and local LLM
+- **Combinations**: Mix and match agents as needed
+- **Automatic setup**: Devcontainer configures everything for you
+
+### 📄 **Academic Paper Workflow**
+
+For `project_type="paper"`:
+
+- **Quarto integration** for scientific authoring
+- **Marimo** for interactive data analysis and visualization
+- **paper/paper.qmd** with comprehensive template
+- **Automatic rendering** to HTML and PDF via GitHub Actions
+- **Citation management** with BibTeX support
+- **Mathematical expressions** with MathJax
+- **Paper-specific Make commands**: `make paper-render`, `make paper-preview`
 
 ## GitHub Actions Workflows
 
-The template includes four workflows:
+The template includes comprehensive workflows:
 
 1. **CI** (`ci.yml`): Run tests, linting, and type checking on every push/PR
 2. **Build** (`build.yml`): Build packages across multiple OS/Python versions
 3. **Publish** (`publish.yml`): Publish to PyPI on release
 4. **Docs** (`docs.yml`): Deploy documentation to GitHub Pages
+5. **Paper Rendering** (`render-paper.yml`): Automatically render academic papers (paper projects only)
 
 ## Template Synchronization
 
@@ -241,28 +324,54 @@ Cruft is included in the generated project's development dependencies and config
 ### Checking for Updates
 
 ```bash
-uv run cruft check
+make sync           # First sync your current dependencies
+uv run cruft check  # Check for template updates
 ```
 
 ### Applying Updates
 
 ```bash
-uv run cruft update
+uv run cruft update  # Apply template updates
+make setup          # Re-setup environment with new changes
 ```
 
-This will apply template changes while preserving your customizations. See the generated project's documentation for detailed guidance.
+This will apply template changes while preserving your customizations. The updated `.cruft.json` tracks your configuration for seamless updates.
 
 ## Best Practices Included
 
 - ✅ **PEP 518** compliant `pyproject.toml`
 - ✅ **Src layout** for proper package structure
-- ✅ **Type hints** everywhere with runtime validation
+- ✅ **Runtime type safety** with beartype
+- ✅ **Makefile-driven development** workflow
+- ✅ **Advanced containerization** with multi-stage Docker
+- ✅ **AI agent integration** for modern development
+- ✅ **Academic paper support** with Quarto
+- ✅ **Template synchronization** with Cruft
 - ✅ **Comprehensive testing** with pytest and coverage
 - ✅ **Modern tooling** (uv, ruff, pre-commit)
 - ✅ **Professional documentation** with MkDocs Material
 - ✅ **CI/CD ready** with GitHub Actions
 - ✅ **Security** with dependabot and automated updates
-- ✅ **Developer experience** with VS Code configuration
+- ✅ **Outstanding developer experience** with VS Code devcontainers
+
+## New in This Release
+
+### 🚀 **Major Enhancements**
+
+- **AI Agent Integration**: Claude Code CLI, OpenAI Codex, Roo Code support
+- **Academic Paper Workflows**: Quarto integration for scientific authoring
+- **Advanced Devcontainers**: Multi-stage Docker with service orchestration
+- **Makefile-Centric Development**: Centralized command hub for all tasks
+- **Enhanced Type Checking**: Replaced typeguard with beartype for runtime validation
+- **Template Versioning**: Cruft integration for seamless updates
+
+### 🔧 **Technical Improvements**
+
+- Multi-stage Dockerfile with optimized layer caching
+- Docker Compose for complex development environments
+- Conditional installations based on project configuration
+- Enhanced VS Code devcontainer with proper port forwarding
+- Qdrant vector database and Ollama integration for AI workflows
 
 ## License
 

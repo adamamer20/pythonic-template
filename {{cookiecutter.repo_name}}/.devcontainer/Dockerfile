@@ -1,43 +1,44 @@
-{%- if cookiecutter.use_docker == 'y' %}
 # Multi-stage build for {{ cookiecutter.project_name }}
-# Stage 1: Builder - Install dependencies and build wheel
-FROM python:{{ cookiecutter.python_version }}-slim as builder
+# Stage 1: Base environment variables
+FROM python:{{ cookiecutter.python_version }}-slim AS base-env
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
+# Stage 2: Dependencies only - Install all dependencies but no source code
+FROM base-env AS deps
+
+# Install system dependencies (build tools, curl, git, etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    curl \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pipx and uv
-RUN pip install --no-cache-dir pipx && \
-    pipx install uv && \
-    pipx ensurepath
+# Install uv from source
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /app
 
 # Copy dependency files first for better caching
-COPY pyproject.toml uv.lock* ./
+COPY pyproject.toml uv.lock* README.md ./
 
-# Sync dependencies and create virtual environment
+# Sync dependencies and create virtual environment (dev dependencies included)
 RUN uv sync --frozen
+
+# Stage 3: Builder - Build wheel (for production image)
+FROM deps AS builder
 
 # Copy source code and build wheel
 COPY src/ ./src/
-COPY README.md LICENSE ./
+COPY LICENSE ./
 RUN uv build --wheel
 
-# Stage 2: Runtime - Minimal production image
-FROM python:{{ cookiecutter.python_version }}-slim as runtime
-
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+# Stage 4: Runtime - Minimal production image
+FROM base-env AS runtime
 
 # Create non-root user
 RUN useradd --create-home --uid 1000 app
@@ -48,31 +49,88 @@ WORKDIR /app
 COPY --from=builder --chown=app:app /app/dist/*.whl ./
 
 # Install only the wheel for minimal footprint
-RUN pip install --no-cache-dir *.whl
+RUN python -m pip install --no-cache-dir --user *.whl && \
+    rm *.whl
+
+# Set PATH to include user's local bin for packages installed with --user
+ENV PATH="/home/app/.local/bin:${PATH}"
 
 # Default command (override as needed)
 CMD ["python", "-m", "{{ cookiecutter.package_name }}"]
 
-# Development stage - For local development with all dev tools
-FROM builder as development
+# Stage 5: Development - For local development with all dev tools
+FROM deps AS development
 
-# Install fish shell and dev tools
-USER root
-RUN apt-get update && apt-get install -y \
+# Install system dependencies, including sudo and Docker CLI
+RUN apt-get update && apt-get install -y --no-install-recommends \
     fish \
+    sudo \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    npm \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg \
+    | gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+    && echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+    https://download.docker.com/linux/debian \
+    $(lsb_release -cs) stable" \
+    > /etc/apt/sources.list.d/docker.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends docker-ce-cli \
     && rm -rf /var/lib/apt/lists/*
 
-# Create dev user with fish shell
-RUN useradd --create-home --shell /usr/bin/fish --uid 1000 dev
+# Conditional Quarto installation (only if project_type is "paper")
+{% if cookiecutter.project_type == "paper" %}
+RUN QUARTO_TAG=$(curl -s https://api.github.com/repos/quarto-dev/quarto-cli/releases/latest \
+    | grep -Po '"tag_name": "\K.*?(?=")') \
+    && VERSION=${QUARTO_TAG#v} \
+    && curl -LsSf https://github.com/quarto-dev/quarto-cli/releases/download/${QUARTO_TAG}/quarto-${VERSION}-linux-amd64.tar.gz \
+    -o quarto.tar.gz \
+    && mkdir -p /usr/local/quarto \
+    && tar -xzf quarto.tar.gz -C /usr/local/quarto --strip-components=1 \
+    && ln -s /usr/local/quarto/bin/quarto /usr/local/bin/quarto \
+    && rm quarto.tar.gz \
+    && quarto --version
+{% endif %}
+
+# Conditional Ollama installation (only if roo_code is in ai_agents)
+{% if 'roo_code' in cookiecutter.ai_agents or cookiecutter.ai_agents == 'all' %}
+RUN curl -fsSL https://ollama.com/install.sh | sh
+{% endif %}
+
+# Copy uv from deps stage
+COPY --from=deps /root/.local/bin/uv /usr/local/bin/uv
+
+# Prepare /app directory for venv and its project files
+RUN mkdir -p /app
+COPY --from=deps /app/.venv /app/.venv
+COPY --from=deps /app/pyproject.toml /app/pyproject.toml
+COPY --from=deps /app/uv.lock /app/uv.lock
+
+# Set PATH to include the project's virtual environment
+ENV PATH="/app/.venv/bin:${PATH}"
+
+# Create docker group and dev user, configure passwordless sudo, and set ownership
+RUN groupadd -g 999 docker \
+    && echo "dev ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/dev-nopasswd \
+    && chmod 0440 /etc/sudoers.d/dev-nopasswd \
+    && useradd --create-home --shell /usr/bin/fish --uid 1000 --groups docker dev \
+    && mkdir -p /workspace \
+    && chown -R dev:dev /home/dev /workspace /app
+
 USER dev
 WORKDIR /workspace
 
-# Copy entire project for development
-COPY --chown=dev:dev . .
+# Tell npm to install global packages into the dev home directory
+ENV NPM_CONFIG_PREFIX=/home/dev/.local
+ENV PATH=/home/dev/.local/bin:$PATH
 
-# Install pre-commit hooks
-RUN uv run pre-commit install
+# Conditional Claude Code CLI installation
+{% if 'claude_code' in cookiecutter.ai_agents or cookiecutter.ai_agents == 'all' %}
+RUN npm install -g @anthropic-ai/claude-code
+{% endif %}
 
-# Set fish as default shell and start interactive session
+# Set fish as default shell
 CMD ["/usr/bin/fish", "-l"]
-{%- endif %}

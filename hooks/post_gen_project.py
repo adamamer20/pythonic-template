@@ -100,12 +100,10 @@ def main():
     print("2. Start developing!")
     print("   # Your code goes in src/{{ cookiecutter.package_name }}/")
 
-    # Optional Docker setup
-    use_docker = "{{ cookiecutter.use_docker }}"
-    if use_docker == "y":
-        print("\n[DOCKER] Docker support was enabled")
-        print("   You can build the development container with:")
-        print("   docker build -t {{ cookiecutter.repo_name }}-dev .")
+    # Docker setup (always enabled)
+    print("\n[DOCKER] Docker development environment is available")
+    print("   Use VS Code's dev container extension or run:")
+    print("   docker compose -f .devcontainer/docker-compose.yml up -d")
 
 
 if __name__ == "__main__":

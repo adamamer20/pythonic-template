@@ -1,0 +1,87 @@
+name: Render and Deploy Paper
+
+on:
+  push:
+    branches: [main]
+    paths: ['paper/**']
+  pull_request:
+    branches: [main]
+    paths: ['paper/**']
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '{{ cookiecutter.python_version }}'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: |
+          uv sync --all-extras --dev
+
+      - name: Render Quarto document
+        run: |
+          cd paper
+          quarto render paper.qmd --to html --to pdf
+
+      - name: Upload paper artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-paper
+          path: |
+            paper/paper.html
+            paper/paper.pdf
+          retention-days: 30
+
+  deploy-pages:
+    needs: render
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rendered-paper
+          path: ./paper-output
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./paper-output
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

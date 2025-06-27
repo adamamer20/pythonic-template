@@ -1,1 +1,0 @@
-Test file: {{ cookiecutter.project_name }}

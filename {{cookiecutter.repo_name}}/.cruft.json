@@ -14,7 +14,8 @@
             "initial_version": "{{ cookiecutter.initial_version }}",
             "ruff_version": "{{ cookiecutter.ruff_version }}",
             "license": "{{ cookiecutter.license }}",
-            "use_docker": "{{ cookiecutter.use_docker }}",
+            "project_type": "{{ cookiecutter.project_type }}",
+            "ai_agents": "{{ cookiecutter.ai_agents }}",
             "project_short_description": "{{ cookiecutter.project_short_description }}"
         }
     },

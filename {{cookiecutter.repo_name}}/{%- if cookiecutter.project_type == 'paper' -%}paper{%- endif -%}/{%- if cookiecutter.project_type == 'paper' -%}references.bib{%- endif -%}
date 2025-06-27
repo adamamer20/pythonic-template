@@ -1,0 +1,33 @@
+@article{example2024,
+  title={Example Research Paper},
+  author={Smith, John and Doe, Jane},
+  journal={Journal of Important Research},
+  volume={42},
+  number={1},
+  pages={123--145},
+  year={2024},
+  publisher={Academic Press}
+}
+
+@book{reference2023,
+  title={Comprehensive Guide to Research Methods},
+  author={Johnson, Alice},
+  year={2023},
+  publisher={University Press}
+}
+
+@inproceedings{conference2024,
+  title={Recent Advances in the Field},
+  author={Brown, Bob and Wilson, Carol},
+  booktitle={Proceedings of the International Conference},
+  pages={456--467},
+  year={2024},
+  organization={IEEE}
+}
+
+@misc{software2024,
+  title={ {{ cookiecutter.project_name }}: {{ cookiecutter.project_short_description }} },
+  author={ {{ cookiecutter.author_name }} },
+  howpublished={\url{https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}}},
+  year={2024}
+}

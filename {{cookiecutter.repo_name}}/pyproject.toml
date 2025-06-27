@@ -37,21 +37,18 @@ dev = [
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
     "pre-commit>=3.6.0",
-    "typeguard>=4.0.0",
+    "beartype>=0.17.0",
     "python-dotenv>=1.0.0",
     "cruft>=2.15.0",
 ]
 
-[project.optional-dependencies]
-data = [
-    "polars>=0.20.0",
-    "numpy>=1.24.0",
+{% if cookiecutter.project_type == "paper" %}[project.optional-dependencies]
+paper = [
+    "marimo>=0.8.0",
     "matplotlib>=3.7.0",
-]
-ml = [
-    "torch>=2.0.0",
-    "transformers>=4.30.0",
-]
+    "seaborn>=0.12.0",
+    "plotly>=5.0.0",
+]{% endif %}
 
 [project.urls]
 Homepage = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}"
@@ -119,3 +116,4 @@ path = "src/{{ cookiecutter.package_name }}/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/{{ cookiecutter.package_name }}"]
+

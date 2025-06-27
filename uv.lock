@@ -825,7 +825,7 @@ dependencies = [
     { name = "cookiecutter" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "cruft" },
     { name = "mkdocs" },
@@ -838,16 +838,18 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "cookiecutter", specifier = ">=2.6.0" },
-    { name = "cruft", marker = "extra == 'dev'", specifier = ">=2.16.0" },
-    { name = "mkdocs", marker = "extra == 'dev'", specifier = ">=1.6.1" },
-    { name = "mkdocs-material", marker = "extra == 'dev'", specifier = ">=9.6.14" },
-    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'dev'", specifier = ">=0.29.1" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.2.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.5" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.1.1" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.11.11" },
+requires-dist = [{ name = "cookiecutter", specifier = ">=2.6.0" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "cruft", specifier = ">=2.16.0" },
+    { name = "mkdocs", specifier = ">=1.6.1" },
+    { name = "mkdocs-material", specifier = ">=9.6.14" },
+    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.29.1" },
+    { name = "pre-commit", specifier = ">=4.2.0" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-cov", specifier = ">=6.1.1" },
+    { name = "ruff", specifier = ">=0.11.11" },
 ]
 
 [[package]]

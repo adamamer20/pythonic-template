@@ -1,9 +1,9 @@
-{%- if cookiecutter.use_docker == 'y' -%}
 {
     "name": "{{ cookiecutter.project_name }} Dev Container",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "development",
+    "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -14,21 +14,41 @@
                 "github.copilot",
                 "github.copilot-chat",
                 "tamasfe.even-better-toml",
-                "redhat.vscode-yaml"
+                "redhat.vscode-yaml"{% if cookiecutter.project_type == "paper" %},
+                "quarto.quarto"{% endif %}{% if 'roo_code' in cookiecutter.ai_agents or cookiecutter.ai_agents == 'all' %},
+                "ms-vscode.vscode-json"{% endif %}
             ],
             "settings": {
-                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.defaultInterpreterPath": "/app/.venv/bin/python",
                 "python.terminal.activateEnvironment": false,
-                "terminal.integrated.defaultProfile.linux": "fish"
+                "terminal.integrated.defaultProfile.linux": "fish",
+                "ruff.importStrategy": "fromEnvironment"{% if cookiecutter.project_type == "paper" %},
+                "quarto.path": "/usr/local/bin/quarto"{% endif %}
             }
         }
     },
     "forwardPorts": [
-        8000
+        8000{% if 'roo_code' in cookiecutter.ai_agents or cookiecutter.ai_agents == 'all' %},
+        6333,
+        11434{% endif %}
     ],
-    "postCreateCommand": "fish -c 'echo Welcome to {{ cookiecutter.project_name }} development environment!'",
-    "remoteUser": "dev"
-}
-{%- else -%}
-{}
-{%- endif -%} 
+    "portsAttributes": {
+        "8000": {
+            "label": "Application Server",
+            "onAutoForward": "notify"
+        }{% if 'roo_code' in cookiecutter.ai_agents or cookiecutter.ai_agents == 'all' %},
+        "6333": {
+            "label": "Qdrant Vector DB",
+            "onAutoForward": "silent"
+        },
+        "11434": {
+            "label": "Ollama API",
+            "onAutoForward": "silent"
+        }{% endif %}
+    },
+    "postCreateCommand": "fish -c 'make setup && echo Welcome to {{ cookiecutter.project_name }} development environment!'",
+    "remoteUser": "dev",
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ]
+} 
