@@ -10,8 +10,8 @@ Template variables are defined in `cookiecutter.json` and can be customized duri
 
 ### `project_name`
 
-**Type:** String  
-**Default:** `"my-python-project"`  
+**Type:** String
+**Default:** `"my-python-project"`
 **Validation:** Must be a valid Python package name (lowercase, hyphens allowed)
 
 The name of your Python project. This will be used for:
@@ -23,6 +23,7 @@ The name of your Python project. This will be used for:
 - Docker image name
 
 **Examples:**
+
 ```bash
 # Valid names
 data-analysis-toolkit
@@ -37,6 +38,7 @@ project_name  # Underscores not recommended
 ```
 
 **Generated Files Affected:**
+
 - `pyproject.toml` - package name
 - `src/{project_name}/` - source directory
 - `README.md` - title and installation commands
@@ -45,19 +47,21 @@ project_name  # Underscores not recommended
 
 ### `project_description`
 
-**Type:** String  
-**Default:** `"A modern Python project"`  
+**Type:** String
+**Default:** `"A modern Python project"`
 **Validation:** 10-100 characters recommended
 
 A brief description of your project's purpose and functionality.
 
 **Usage:**
+
 - PyPI package description
 - README.md subtitle
 - Documentation homepage
 - GitHub repository description
 
 **Best Practices:**
+
 ```bash
 # Good descriptions
 "A fast and flexible data processing library"
@@ -71,13 +75,14 @@ A brief description of your project's purpose and functionality.
 
 ### `author_name`
 
-**Type:** String  
-**Default:** `"Your Name"`  
+**Type:** String
+**Default:** `"Your Name"`
 **Validation:** 2-50 characters
 
 The primary author or maintainer of the project.
 
 **Used In:**
+
 - `pyproject.toml` - author field
 - `LICENSE` - copyright holder
 - Documentation - author information
@@ -85,13 +90,14 @@ The primary author or maintainer of the project.
 
 ### `author_email`
 
-**Type:** String  
-**Default:** `"your.email@example.com"`  
+**Type:** String
+**Default:** `"your.email@example.com"`
 **Validation:** Must be valid email format
 
 Contact email for the project maintainer.
 
 **Used In:**
+
 - `pyproject.toml` - author email
 - Documentation - contact information
 - Package metadata for PyPI
@@ -100,13 +106,14 @@ Contact email for the project maintainer.
 
 ### `python_version`
 
-**Type:** String (Choice)  
-**Default:** `"3.13"`  
+**Type:** String (Choice)
+**Default:** `"3.13"`
 **Options:** `["3.11", "3.12", "3.13"]`
 
 Minimum Python version required for the project.
 
 **Impact:**
+
 - `pyproject.toml` - Python version constraint
 - CI/CD workflows - test matrix
 - Documentation - installation requirements
@@ -124,19 +131,21 @@ Minimum Python version required for the project.
 
 ### `use_docker`
 
-**Type:** String (Choice)  
-**Default:** `"y"`  
+**Type:** String (Choice)
+**Default:** `"y"`
 **Options:** `["y", "n"]`
 
 Whether to include Docker support in the generated project.
 
 **When enabled (`"y"`):**
-- `Dockerfile` - optimized multi-stage build
+
+- `.devcontainer/Dockerfile` - optimized multi-stage build
 - `docker-compose.yml` - development environment
 - `.dockerignore` - exclude unnecessary files
 - Documentation section on Docker usage
 
 **Docker Configuration:**
+
 ```dockerfile
 # Generated Dockerfile features:
 - Multi-stage build for smaller images
@@ -148,13 +157,14 @@ Whether to include Docker support in the generated project.
 
 ### `use_github_actions`
 
-**Type:** String (Choice)  
-**Default:** `"y"`  
+**Type:** String (Choice)
+**Default:** `"y"`
 **Options:** `["y", "n"]`
 
 Whether to include GitHub Actions CI/CD workflows.
 
 **When enabled (`"y"`):**
+
 - `.github/workflows/ci.yml` - comprehensive CI pipeline
 - `.github/workflows/release.yml` - automated releases
 - `.github/dependabot.yml` - dependency updates
@@ -162,6 +172,7 @@ Whether to include GitHub Actions CI/CD workflows.
 - `.github/PULL_REQUEST_TEMPLATE.md` - PR template
 
 **CI Pipeline Features:**
+
 - Multi-platform testing (Linux, macOS, Windows)
 - Multiple Python versions
 - Code quality checks (Ruff, mypy)
@@ -171,13 +182,14 @@ Whether to include GitHub Actions CI/CD workflows.
 
 ### `use_pre_commit`
 
-**Type:** String (Choice)  
-**Default:** `"y"`  
+**Type:** String (Choice)
+**Default:** `"y"`
 **Options:** `["y", "n"]`
 
 Whether to include pre-commit hooks for code quality.
 
 **When enabled (`"y"`):**
+
 - `.pre-commit-config.yaml` - hook configuration
 - Automatic formatting with Ruff
 - Import sorting
@@ -186,6 +198,7 @@ Whether to include pre-commit hooks for code quality.
 - Trailing whitespace removal
 
 **Hook Configuration:**
+
 ```yaml
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -203,13 +216,14 @@ repos:
 
 ### `project_slug`
 
-**Type:** String (Computed)  
-**Default:** Derived from `project_name`  
+**Type:** String (Computed)
+**Default:** Derived from `project_name`
 **Validation:** Auto-generated, cannot be directly set
 
 A Python-compatible version of the project name used for package imports.
 
 **Transformation Rules:**
+
 ```python
 # project_name → project_slug
 "my-awesome-project" → "my_awesome_project"
@@ -218,19 +232,21 @@ A Python-compatible version of the project name used for package imports.
 ```
 
 **Used In:**
+
 - `src/{project_slug}/` - package directory
 - Import statements in examples
 - Test file imports
 
 ### `repository_url`
 
-**Type:** String (Computed)  
-**Default:** `"https://github.com/{author_name}/{project_name}"`  
+**Type:** String (Computed)
+**Default:** `"https://github.com/{author_name}/{project_name}"`
 **Validation:** Auto-generated from author and project name
 
 The GitHub repository URL for the project.
 
 **Used In:**
+
 - `pyproject.toml` - project URLs
 - Documentation - source links
 - README.md - repository badges
@@ -238,13 +254,14 @@ The GitHub repository URL for the project.
 
 ### `documentation_url`
 
-**Type:** String (Computed)  
-**Default:** `"https://{author_name}.github.io/{project_name}"`  
+**Type:** String (Computed)
+**Default:** `"https://{author_name}.github.io/{project_name}"`
 **Validation:** Auto-generated for GitHub Pages
 
 The URL where documentation will be hosted.
 
 **Used In:**
+
 - `pyproject.toml` - documentation URL
 - README.md - documentation links
 - MkDocs configuration
@@ -253,8 +270,8 @@ The URL where documentation will be hosted.
 
 ### `license`
 
-**Type:** String (Choice)  
-**Default:** `"MIT"`  
+**Type:** String (Choice)
+**Default:** `"MIT"`
 **Options:** `["MIT", "Apache-2.0", "GPL-3.0", "BSD-3-Clause", "Proprietary"]`
 
 The license for your project.
@@ -270,6 +287,7 @@ The license for your project.
 | Proprietary | ❌ | ❌ | ✅ |
 
 **Generated Files:**
+
 - `LICENSE` - full license text
 - `pyproject.toml` - license classifier
 - README.md - license badge
@@ -278,12 +296,13 @@ The license for your project.
 
 ### `ruff_config`
 
-**Type:** Dictionary (Internal)  
+**Type:** Dictionary (Internal)
 **Default:** Comprehensive Ruff configuration
 
 Internal configuration for Ruff linting and formatting.
 
 **Features:**
+
 ```toml
 [tool.ruff]
 line-length = 88
@@ -303,12 +322,13 @@ select = [
 
 ### `mypy_config`
 
-**Type:** Dictionary (Internal)  
+**Type:** Dictionary (Internal)
 **Default:** Strict mypy configuration
 
 Internal configuration for type checking.
 
 **Settings:**
+
 ```toml
 [tool.mypy]
 python_version = "3.11"  # Based on python_version
@@ -320,12 +340,13 @@ disallow_untyped_defs = true
 
 ### `pytest_config`
 
-**Type:** Dictionary (Internal)  
+**Type:** Dictionary (Internal)
 **Default:** Comprehensive pytest configuration
 
 Internal configuration for testing.
 
 **Settings:**
+
 ```toml
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -343,12 +364,13 @@ addopts = [
 
 ### `mkdocs_theme`
 
-**Type:** String (Internal)  
+**Type:** String (Internal)
 **Default:** `"material"`
 
 The MkDocs theme used for documentation.
 
 **Theme Features:**
+
 - Material Design
 - Dark/light mode toggle
 - Search functionality
@@ -358,7 +380,7 @@ The MkDocs theme used for documentation.
 
 ### `mkdocs_features`
 
-**Type:** List (Internal)  
+**Type:** List (Internal)
 **Default:** Comprehensive feature set
 
 Enabled MkDocs Material features:
@@ -381,20 +403,20 @@ These variables are automatically computed from other inputs:
 
 ### `year`
 
-**Type:** String  
-**Default:** Current year  
+**Type:** String
+**Default:** Current year
 **Usage:** Copyright notices, license files
 
 ### `package_name`
 
-**Type:** String  
-**Default:** Normalized version of `project_name`  
+**Type:** String
+**Default:** Normalized version of `project_name`
 **Usage:** Python package imports
 
 ### `class_name`
 
-**Type:** String  
-**Default:** PascalCase version of `project_name`  
+**Type:** String
+**Default:** PascalCase version of `project_name`
 **Usage:** Main class names in generated code
 
 ## Validation Rules
@@ -405,20 +427,20 @@ These variables are automatically computed from other inputs:
 def validate_project_name(name: str) -> bool:
     """Validate project name follows Python packaging conventions."""
     import re
-    
+
     # Must be lowercase with hyphens
     if not re.match(r'^[a-z][a-z0-9\-]*[a-z0-9]$', name):
         return False
-    
+
     # Cannot be Python reserved word
     reserved = ['and', 'or', 'not', 'if', 'else', 'def', 'class', ...]
     if name.replace('-', '_') in reserved:
         return False
-    
+
     # Reasonable length
     if not (3 <= len(name) <= 50):
         return False
-    
+
     return True
 ```
 
@@ -428,7 +450,7 @@ def validate_project_name(name: str) -> bool:
 def validate_email(email: str) -> bool:
     """Validate email format."""
     import re
-    
+
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
 ```

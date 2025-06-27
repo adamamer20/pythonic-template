@@ -5,6 +5,7 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 ## Features
 
 ### 🚀 **Modern Python Stack**
+
 - **uv** for ultra-fast package management and dependency resolution
 - **Ruff** for lightning-fast linting and formatting
 - **pytest** with comprehensive test configuration
@@ -12,6 +13,7 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 - **typeguard** for runtime type checking
 
 ### 🛡️ **Quality Assurance**
+
 - Pre-commit hooks for automatic code quality
 - GitHub Actions CI/CD pipelines
 - Dependabot for automated dependency updates
@@ -19,6 +21,7 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 - Comprehensive test coverage
 
 ### 📚 **Documentation & Developer Experience**
+
 - Material for MkDocs with modern theme
 - VS Code configuration and recommended extensions
 - Docker support with dev containers
@@ -26,6 +29,7 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 - Professional project structure
 
 ### 🔧 **DevOps Ready**
+
 - GitHub Actions for CI, building, and publishing
 - Automated dependency updates with auto-merge
 - PyPI publishing with trusted publishing
@@ -34,15 +38,17 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 ## Quick Start
 
 1. **Install Cookiecutter** (if not already installed):
+
    ```bash
    # Using uv (recommended)
    uv tool install cookiecutter
-   
+
    # Or using pip
    pip install cookiecutter
    ```
 
 2. **Generate your project**:
+
    ```bash
    cookiecutter https://github.com/adamamer20/pythonic-template
    ```
@@ -56,20 +62,23 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
    - Docker support (optional)
 
 4. **Navigate to your new project**:
+
    ```bash
    cd your-new-project
    ```
 
 5. **Dependencies are automatically installed via the post-generation hook**. If needed, manually sync:
+
    ```bash
    uv sync --all-extras
    ```
 
 6. **Start developing**! 🎉
+
    ```bash
    # Run tests
    make test
-   
+
    # Start coding in src/your_package/
    # Tests go in tests/
    ```
@@ -84,7 +93,7 @@ The template prompts for these variables:
 | `package_name` | Python package name (auto-generated) | (derived from project_name) |
 | `repo_name` | Repository name (auto-generated) | (derived from project_name) |
 | `author_name` | Your name | "Adam Amer" |
-| `author_email` | Your email | "adam@example.com" |
+| `author_email` | Your email | "<adam@example.com>" |
 | `github_username` | Your GitHub username | "adamamer20" |
 | `python_version` | Minimum Python version | "3.12" |
 | `initial_version` | Starting version | "0.1.0" |
@@ -94,7 +103,7 @@ The template prompts for these variables:
 
 ## Generated Project Structure
 
-```
+```text
 your-project/
 ├── .github/
 │   ├── workflows/          # CI/CD pipelines
@@ -106,7 +115,8 @@ your-project/
 ├── .env.example          # Environment variables template
 ├── .gitignore            # Comprehensive gitignore
 ├── .pre-commit-config.yaml # Code quality hooks
-├── Dockerfile            # Development container (optional)
+├── .devcontainer/        # Development container config
+│   └── Dockerfile        # Container image
 ├── Makefile              # Common development tasks
 ├── mkdocs.yml            # Documentation configuration
 ├── pyproject.toml        # Project configuration
@@ -136,7 +146,7 @@ pre-commit --version
 # Run tests
 make test          # or: uv run pytest
 
-# Run tests with type checking  
+# Run tests with type checking
 make test-type     # or: uv run env DEV_TYPECHECK=1 pytest
 
 # Lint and format
@@ -152,11 +162,12 @@ pre-commit run --all-files
 ```
 
 ### 3. **Make Commands**
+
 The template includes a comprehensive Makefile:
 
 ```bash
 make help          # Show available commands
-make dev-install   # Install development dependencies  
+make dev-install   # Install development dependencies
 make test          # Run tests
 make test-cov      # Run tests with coverage
 make test-type     # Run tests with type checking
@@ -170,6 +181,7 @@ make build         # Build package
 ## Key Features Explained
 
 ### 🔍 **Runtime Type Checking**
+
 Set `DEV_TYPECHECK=1` in your `.env` file to enable runtime type validation with typeguard:
 
 ```python
@@ -181,25 +193,30 @@ def process_data(items: list[str]) -> dict[str, int]:
 ```
 
 ### 📦 **Modern Package Management**
+
 - Uses **uv** for fast dependency resolution
 - Lock files for reproducible environments
 - Development dependency groups
 - Easy extras configuration
 
 ### 🤖 **Automated Quality**
+
 - **Ruff** for fast linting and formatting
 - **Pre-commit** hooks prevent bad commits
 - **Dependabot** keeps dependencies updated
 - **GitHub Actions** for continuous integration
 
 ### 📚 **Beautiful Documentation**
+
 - **Material for MkDocs** with modern theme
 - **mkdocstrings** for automatic API documentation
 - **MathJax** support for mathematical expressions
 - **Mermaid** diagrams support
 
 ### 🐳 **Docker Support**
+
 Optional Docker configuration with:
+
 - Fish shell for better development experience
 - Pre-configured development environment
 - VS Code dev container support
@@ -218,14 +235,17 @@ The template includes four workflows:
 Projects generated from this template can stay synchronized with template updates using [Cruft](https://cruft.github.io/cruft/):
 
 ### Setup (included automatically)
+
 Cruft is included in the generated project's development dependencies and configured with a `.cruft.json` file.
 
 ### Checking for Updates
+
 ```bash
 uv run cruft check
 ```
 
 ### Applying Updates
+
 ```bash
 uv run cruft update
 ```
