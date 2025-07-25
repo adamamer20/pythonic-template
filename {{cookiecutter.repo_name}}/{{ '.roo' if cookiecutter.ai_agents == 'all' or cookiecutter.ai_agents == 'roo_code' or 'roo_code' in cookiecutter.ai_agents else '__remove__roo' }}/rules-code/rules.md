@@ -62,7 +62,7 @@ Keep a copy of this file in child projects so these rules apply everywhere.
 **CRITICAL: USE MAKEFILE COMMANDS INSTEAD OF DIRECT TOOL CALLS!**
 
 - Manage dependencies with `uv`; let it handle lockfiles.
-- Assume Pop OS 24.04 and CUDA 12 on an RTX 3090. If CUDA is missing, raise an error.
+- Fish shell
 - Load configuration from `.env` or `pyproject.toml`.
 - Enforce formatting and linting with ruff via pre-commit.
 - **Use beartype for runtime type checking** (no mypy needed).
@@ -71,7 +71,6 @@ Keep a copy of this file in child projects so these rules apply everywhere.
 
 - `make sync` - Sync dependencies with lockfile
 - `make upgrade` - Upgrade all dependencies  
-- `make requirements` - Export requirements.txt
 
 ### Direct uv commands (when Make doesn't cover it)
 
