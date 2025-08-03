@@ -34,6 +34,14 @@ def main():
     project_dir = Path.cwd()
     print(f"[INIT] Initializing project in {project_dir}")
 
+    # Clean up any placeholder files or directories left from template rendering
+    for path in project_dir.rglob("__remove__*"):
+        if path.is_dir():
+            import shutil
+            shutil.rmtree(path)
+        else:
+            path.unlink()
+
     # Initialize git repository
     try:
         run_command("git init -b main")

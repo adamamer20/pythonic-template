@@ -14,8 +14,12 @@ dev-install: ## Install the package in development mode with all dependencies
 	uv sync --all-extras --dev
 
 test: ## Run tests with type checking
-	@echo "🧪 Running tests..."
-	uv run env DEV_TYPECHECK=1 pytest
+        @echo "🧪 Running tests..."
+        uv run env DEV_TYPECHECK=1 pytest
+
+quick-test: ## Run fast tests without type checking
+        @echo "⚡ Running quick tests..."
+        uv run pytest -m "not slow"
 
 test-cov: ## Run tests with coverage report
 	@echo "🧪 Running tests with coverage..."
@@ -64,8 +68,8 @@ publish: ## Publish package to PyPI (requires authentication)
 # Development workflow commands
 
 upgrade: ## Upgrade all dependencies
-	@echo "⬆️  Upgrading dependencies..."
-	uv sync --upgrade
+        @echo "⬆️  Upgrading dependencies..."
+        uv sync --upgrade
 
 {% if cookiecutter.project_type == "paper" %}
 # Paper-specific commands
