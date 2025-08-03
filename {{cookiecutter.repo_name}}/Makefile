@@ -71,10 +71,6 @@ upgrade: ## Upgrade all dependencies
         @echo "⬆️  Upgrading dependencies..."
         uv sync --upgrade
 
-ai-setup: ## Set up AI agent environment
-        @echo "🤖 Setting up AI agent environment..."
-        uv run ./scripts/ai-setup.sh
-
 {% if cookiecutter.project_type == "paper" %}
 # Paper-specific commands
 paper-render: ## Render Quarto paper to HTML and PDF
