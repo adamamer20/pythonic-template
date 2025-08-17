@@ -30,7 +30,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v6
 
       - name: Install dependencies
         run: uv pip install --system -e .[docs]
@@ -40,7 +40,7 @@ jobs:
 
       - name: Setup Pages
         if: github.ref == 'refs/heads/main'
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main'
@@ -58,4 +58,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
