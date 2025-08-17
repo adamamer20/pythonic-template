@@ -59,4 +59,4 @@ mkdocs build
 
 ## Environment Variables
 
-- `DEV_TYPECHECK=1`: Enable runtime type checking with typeguard
+- `DEV_TYPECHECK=1`: Enable runtime type checking with beartype
