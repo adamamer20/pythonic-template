@@ -23,7 +23,7 @@ updates:
           - "pytest*"
           - "mkdocs*"
           - "pre-commit"
-          - "typeguard"
+          - "beartype"
       prod-deps:
         dependency-type: "production"
     labels: ["dependencies", "python"]
