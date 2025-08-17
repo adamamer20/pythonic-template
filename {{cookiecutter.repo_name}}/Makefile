@@ -15,7 +15,7 @@ setup: dev-install pre-commit ## Complete development environment setup
 
 dev-install: ## Install the package in development mode with all dependencies  
 	@echo "📦 Installing development dependencies..."
-	uv sync --all-extras --dev
+	uv sync --all-extras
 
 test: ## Run tests with type checking
         @echo "🧪 Running tests..."
