@@ -265,7 +265,7 @@ jobs:
           path: site/
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
 
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v2
@@ -274,7 +274,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v5
 ```
 
 ## Dependency Management 📦

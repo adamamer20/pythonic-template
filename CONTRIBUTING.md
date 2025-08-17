@@ -56,7 +56,7 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
 - **Package Management**: uv only, no manual requirements.txt
 - **Code Quality**: Ruff for linting and formatting
 - **Testing**: pytest with comprehensive coverage
-- **Type Checking**: mypy with strict configuration
+- **Type Checking**: beartype for runtime type checking
 - **Documentation**: NumPy-style docstrings, MkDocs Material
 - **Git Hooks**: pre-commit for automated quality checks
 

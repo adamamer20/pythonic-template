@@ -107,7 +107,7 @@ Contact email for the project maintainer.
 ### `python_version`
 
 **Type:** String (Choice)
-**Default:** `"3.13"`
+**Default:** `"3.12"`
 **Options:** `["3.11", "3.12", "3.13"]`
 
 Minimum Python version required for the project.

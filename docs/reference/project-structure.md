@@ -191,7 +191,7 @@ Comprehensive project README:
 ```markdown
 # My Python Project
 
-[![CI](https://github.com/your-name/my-python-project/workflows/CI/badge.svg)](https://github.com/your-name/my-python-project/actions)
+[![CI](https://github.com/your-name/my-python-project/actions/workflows/ci.yml/badge.svg)](https://github.com/your-name/my-python-project/actions)
 [![Coverage](https://codecov.io/gh/your-name/my-python-project/branch/main/graph/badge.svg)](https://codecov.io/gh/your-name/my-python-project)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue)](https://your-name.github.io/my-python-project)
 [![Python](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)

@@ -182,7 +182,8 @@ def test_pyproject_toml_validity():
         # Check project metadata
         project = pyproject["project"]
         assert project["name"] == "my_amazing_library"  # Package name is normalized
-        assert project["requires-python"] == ">=3.9"
+        # Check that requires-python uses minimum version (default 3.12)
+        assert project["requires-python"] == ">=3.12"
         assert "dependency-groups" in pyproject
         assert "dev" in pyproject["dependency-groups"]
 

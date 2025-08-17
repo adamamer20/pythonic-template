@@ -219,6 +219,42 @@ def setup_python_versions():
     print("[PYTHON] Python version setup completed!")
 
 
+def setup_cruft_tracking():
+    """Set up cruft tracking with current template commit."""
+    cruft_file = Path.cwd() / ".cruft.json"
+    if not cruft_file.exists():
+        print("[CRUFT] No .cruft.json file found, skipping cruft setup")
+        return
+    
+    try:
+        # Try to get current git commit of template
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"], 
+            capture_output=True, 
+            text=True, 
+            check=False,
+            cwd=Path(__file__).parent.parent  # Template root directory
+        )
+        
+        if result.returncode == 0 and result.stdout.strip():
+            template_commit = result.stdout.strip()
+            
+            # Read and update cruft config
+            content = cruft_file.read_text(encoding="utf-8")
+            updated_content = content.replace('"commit": null', f'"commit": "{template_commit}"')
+            
+            if updated_content != content:
+                cruft_file.write_text(updated_content, encoding="utf-8")
+                print(f"[CRUFT] Updated .cruft.json with template commit: {template_commit[:8]}")
+            else:
+                print("[CRUFT] .cruft.json already has commit set")
+        else:
+            print("[CRUFT] Could not determine template commit SHA")
+            
+    except Exception as e:
+        print(f"[CRUFT] Failed to set up cruft tracking: {e}")
+
+
 def main():
     """Initialize the project after generation."""
     project_dir = Path.cwd()
@@ -226,6 +262,9 @@ def main():
 
     # Set up dynamic Python version configuration first
     setup_python_versions()
+
+    # Set up cruft tracking
+    setup_cruft_tracking()
 
     # Clean up any placeholder files or directories left from template rendering
     for path in project_dir.rglob("__remove__*"):

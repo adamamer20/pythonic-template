@@ -156,28 +156,19 @@ def load_config(
         raise
 ```
 
-### mypy Integration
+### beartype Runtime Type Checking
 
-```toml
-# pyproject.toml
-[tool.mypy]
-python_version = "3.13"
-warn_return_any = true
-warn_unused_configs = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-disallow_any_generics = true
-disallow_subclassing_any = true
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-strict_optional = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
+```python
+# Enable runtime type checking with beartype
+from beartype import beartype
+
+@beartype
+def process_data(items: list[str]) -> dict[str, int]:
+    """Process items and return counts with runtime type validation."""
+    return {item: len(item) for item in items}
 ```
+
+Runtime type checking ensures your type hints are enforced at runtime, catching type errors that static analysis might miss.
 
 ### Runtime Type Checking (Optional)
 

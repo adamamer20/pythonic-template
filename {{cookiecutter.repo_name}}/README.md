@@ -1,7 +1,7 @@
 # {{ cookiecutter.project_name }}
 
-[![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/workflows/CI/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/ci.yml)
-[![Documentation](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/workflows/Documentation/badge.svg)](https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.repo_name }}/)
+[![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/ci.yml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/ci.yml)
+[![Documentation](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/docs.yml/badge.svg)](https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.repo_name }}/)
 [![PyPI version](https://badge.fury.io/py/{{ cookiecutter.package_name }}.svg)](https://badge.fury.io/py/{{ cookiecutter.package_name }})
 [![Python versions](https://img.shields.io/pypi/pyversions/{{ cookiecutter.package_name }}.svg)](https://pypi.org/project/{{ cookiecutter.package_name }}/)
 {%- if cookiecutter.license == "MIT" %}
