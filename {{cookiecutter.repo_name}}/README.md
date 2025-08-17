@@ -16,7 +16,7 @@
 
 ## Features
 
-- ✨ **Modern Python**: Built with Python 3.9+ support
+- ✨ **Modern Python**: Built with Python __PY_MIN__+ support
 - 🚀 **Fast Development**: Powered by `uv` package manager
 - 🛡️ **Type Safe**: Full type hints with runtime validation via `beartype`
 - 🧪 **Well Tested**: Comprehensive test suite with pytest
@@ -51,7 +51,7 @@ print(f"{{ cookiecutter.project_name }} version: {{ "{" }}{{ cookiecutter.packag
 
 ### Prerequisites
 
-- Python 3.9+
+- Python __PY_MIN__+
 - [uv](https://github.com/astral-sh/uv) package manager
 
 ### Setup
