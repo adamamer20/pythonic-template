@@ -30,6 +30,5 @@
         "openai_codex,roo_code",
         "none"
     ],
-    "project_short_description": "A modern Python package",
-    "_release_date": "{% now 'utc', '%Y-%m-%d' %}"
+    "project_short_description": "A modern Python package"
 }

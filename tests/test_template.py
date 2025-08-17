@@ -770,13 +770,8 @@ def test_ruff_version_consistency():
         project_path = Path(temp_dir) / "my-amazing-library"
         precommit_content = (project_path / ".pre-commit-config.yaml").read_text()
         
-        # Should use floating version for consistency  
-        assert 'rev: "v0.12.9"' in precommit_content, "Should use floating Ruff version"
-        
-        # Should not have pinned versions
-        import re
-        pinned_pattern = r'rev: "v0\.\d+\.\d+"'
-        assert not re.search(pinned_pattern, precommit_content), "Should not use pinned Ruff version"
+        # Should use pinned version as configured in template
+        assert 'rev: "v0.12.9"' in precommit_content, "Should use pinned Ruff version v0.12.9"
 
 
 def test_makefile_targets_exist():
