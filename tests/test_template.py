@@ -600,5 +600,240 @@ def test_conditional_ai_agent_files():
                     assert not content, f"{file_path} should be empty when {ai_agent} is selected, but contains: {content[:100]}..."
 
 
+def test_dynamic_python_versions():
+    """Test that Python versions are dynamically configured correctly."""
+    test_cases = ["3.12", "3.13", "3.14"]
+    
+    for python_version in test_cases:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Generate project with specific Python version
+            run_subprocess(
+                [
+                    "cookiecutter",
+                    str(Path(__file__).parent.parent),
+                    "--no-input",
+                    f"python_version={python_version}",
+                    f"--output-dir={temp_dir}",
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
+            project_path = Path(temp_dir) / "my-amazing-library"
+            
+            # Test CI workflow matrix
+            ci_content = (project_path / ".github/workflows/ci.yml").read_text()
+            assert "python-version: __PY_MATRIX__" not in ci_content, "Tokens should be replaced in CI"
+            assert f"python-version: [" in ci_content, "Matrix should be populated"
+            
+            # Test Codecov condition uses max version
+            assert 'if: matrix.python-version == \'__PY_MAX__\'' not in ci_content, "MAX token should be replaced"
+            
+            # Test README has resolved version
+            readme_content = (project_path / "README.md").read_text()
+            assert "__PY_MIN__" not in readme_content, "MIN token should be replaced in README"
+            assert f"Python {python_version}+" in readme_content, "README should show minimum version"
+            
+            # Test pyproject.toml has resolved version
+            pyproject_content = (project_path / "pyproject.toml").read_text()
+            assert "__PY_MIN__" not in pyproject_content, "MIN token should be replaced in pyproject"
+            assert f'requires-python = ">={python_version}"' in pyproject_content, "pyproject should have minimum version"
+            assert "__PY_CLASSIFIERS__" not in pyproject_content, "Classifiers token should be replaced"
+            
+            # Test Python classifiers are present
+            assert f'"Programming Language :: Python :: {python_version}"' in pyproject_content, "Should have classifier for min version"
+            
+            # Test changelog has real date
+            changelog_content = (project_path / "docs/development/changelog.md").read_text()
+            assert "__RELEASE_DATE__" not in changelog_content, "Release date token should be replaced"
+            import re
+            date_pattern = r"\d{4}-\d{2}-\d{2}"
+            assert re.search(date_pattern, changelog_content), "Should have real date format"
+
+
+def test_python_version_matrix_generation():
+    """Test that Python version matrix includes correct versions."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter",
+                str(Path(__file__).parent.parent),
+                "--no-input",
+                "python_version=3.12",
+                f"--output-dir={temp_dir}",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        project_path = Path(temp_dir) / "my-amazing-library"
+        ci_content = (project_path / ".github/workflows/ci.yml").read_text()
+        
+        # Should include minimum version and higher
+        assert '"3.12"' in ci_content, "Should include minimum version 3.12"
+        
+        # Should not include lower versions
+        assert '"3.11"' not in ci_content, "Should not include versions below minimum"
+        assert '"3.10"' not in ci_content, "Should not include versions below minimum"
+
+
+def test_no_leftover_tokens():
+    """Test that no placeholder tokens remain after generation."""
+    tokens_to_check = [
+        "__PY_MIN__",
+        "__PY_MATRIX__", 
+        "__PY_MAX__",
+        "__PY_SHORT__",
+        "__PY_CLASSIFIERS__",
+        "__RELEASE_DATE__"
+    ]
+    
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter",
+                str(Path(__file__).parent.parent),
+                "--no-input",
+                f"--output-dir={temp_dir}",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        project_path = Path(temp_dir) / "my-amazing-library"
+        
+        # Files that should have token replacements
+        files_to_check = [
+            ".github/workflows/ci.yml",
+            ".github/workflows/docs.yml",
+            ".github/workflows/publish.yml",
+            "README.md",
+            "pyproject.toml", 
+            "docs/development/changelog.md",
+        ]
+        
+        for file_path in files_to_check:
+            full_path = project_path / file_path
+            if full_path.exists():
+                content = full_path.read_text()
+                for token in tokens_to_check:
+                    assert token not in content, f"Found unreplaced token {token} in {file_path}"
+
+
+def test_no_typeguard_references():
+    """Test that no typeguard references remain in generated project."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter", 
+                str(Path(__file__).parent.parent),
+                "--no-input",
+                f"--output-dir={temp_dir}",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        project_path = Path(temp_dir) / "my-amazing-library"
+        
+        # Check that beartype is used instead of typeguard
+        pyproject_content = (project_path / "pyproject.toml").read_text()
+        assert "beartype" in pyproject_content, "Should use beartype"
+        assert "typeguard" not in pyproject_content, "Should not reference typeguard"
+        
+        # Check contributing docs
+        contributing_content = (project_path / "docs/development/contributing.md").read_text()
+        assert "beartype" in contributing_content, "Should mention beartype in docs"
+        assert "typeguard" not in contributing_content, "Should not mention typeguard in docs"
+
+
+def test_ruff_version_consistency():
+    """Test that Ruff version strategy is consistent."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter",
+                str(Path(__file__).parent.parent), 
+                "--no-input",
+                f"--output-dir={temp_dir}",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        project_path = Path(temp_dir) / "my-amazing-library"
+        precommit_content = (project_path / ".pre-commit-config.yaml").read_text()
+        
+        # Should use floating version for consistency  
+        assert 'rev: "v0"' in precommit_content, "Should use floating Ruff version"
+        
+        # Should not have pinned versions
+        import re
+        pinned_pattern = r'rev: "v0\.\d+\.\d+"'
+        assert not re.search(pinned_pattern, precommit_content), "Should not use pinned Ruff version"
+
+
+def test_makefile_targets_exist():
+    """Test that all standard Makefile targets exist."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter",
+                str(Path(__file__).parent.parent),
+                "--no-input", 
+                f"--output-dir={temp_dir}",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        project_path = Path(temp_dir) / "my-amazing-library"
+        makefile_content = (project_path / "Makefile").read_text()
+        
+        # Standard targets that should always exist
+        required_targets = [
+            "help:", "setup:", "fmt:", "format:", "lint:", "check:", 
+            "test:", "docs:", "clean:", "build:", "publish:"
+        ]
+        
+        for target in required_targets:
+            assert target in makefile_content, f"Missing required Makefile target: {target}"
+
+
+def test_github_actions_versions():
+    """Test that GitHub Actions use the latest versions."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        run_subprocess(
+            [
+                "cookiecutter",
+                str(Path(__file__).parent.parent),
+                "--no-input",
+                f"--output-dir={temp_dir}",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        project_path = Path(temp_dir) / "my-amazing-library"
+        
+        # Check CI workflow
+        ci_content = (project_path / ".github/workflows/ci.yml").read_text()
+        assert "setup-uv@v6" in ci_content, "Should use setup-uv@v6"
+        assert "codecov-action@v5" in ci_content, "Should use codecov-action@v5"
+        
+        # Check docs workflow
+        docs_content = (project_path / ".github/workflows/docs.yml").read_text()
+        assert "setup-uv@v6" in docs_content, "Should use setup-uv@v6 in docs"
+        assert "configure-pages@v5" in docs_content, "Should use configure-pages@v5"
+        assert "deploy-pages@v5" in docs_content, "Should use deploy-pages@v5"
+
+
 if __name__ == "__main__":
     pytest.main([__file__])
