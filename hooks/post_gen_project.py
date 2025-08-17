@@ -194,6 +194,7 @@ def setup_python_versions():
         ".github/workflows/ci.yml",
         ".github/workflows/docs.yml", 
         ".github/workflows/publish.yml",
+        ".github/workflows/render-paper.yml",
         "README.md",
         "pyproject.toml",
         "docs/development/changelog.md",
