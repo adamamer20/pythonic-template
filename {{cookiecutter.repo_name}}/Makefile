@@ -1,4 +1,4 @@
-.PHONY: help dev-install test test-cov lint format quality pre-commit docs docs-build clean build publish upgrade {% if cookiecutter.project_type == "paper" %} paper-render paper-preview paper-check{% endif %}
+.PHONY: help setup dev-install test test-cov lint format quality pre-commit docs docs-build clean build publish upgrade {% if cookiecutter.project_type == "paper" %} paper-render paper-preview paper-check{% endif %}
 
 help: ## Show this help message and available commands
 	@echo "🚀 {{ cookiecutter.project_name }} - Development Commands"
@@ -8,6 +8,10 @@ help: ## Show this help message and available commands
 	@echo ""
 	@echo "💡 Use 'make <command>' to run any command above"
 	@echo "💡 All commands use the Makefile for consistency and ease of use"
+
+setup: dev-install pre-commit ## Complete development environment setup
+	@echo "🎉 Development environment setup complete!"
+	@echo "🚀 You're ready to start developing!"
 
 dev-install: ## Install the package in development mode with all dependencies  
 	@echo "📦 Installing development dependencies..."
@@ -19,7 +23,7 @@ test: ## Run tests with type checking
 
 quick-test: ## Run fast tests without type checking
         @echo "⚡ Running quick tests..."
-        uv run pytest -m "not slow"
+        uv run pytest -x
 
 test-cov: ## Run tests with coverage report
 	@echo "🧪 Running tests with coverage..."
@@ -70,6 +74,9 @@ publish: ## Publish package to PyPI (requires authentication)
 upgrade: ## Upgrade all dependencies
         @echo "⬆️  Upgrading dependencies..."
         uv sync --upgrade
+
+check: quality test ## Run all quality checks and tests
+	@echo "✅ All checks completed!"
 
 {% if cookiecutter.project_type == "paper" %}
 # Paper-specific commands
