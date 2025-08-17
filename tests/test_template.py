@@ -770,7 +770,7 @@ def test_ruff_version_consistency():
         precommit_content = (project_path / ".pre-commit-config.yaml").read_text()
         
         # Should use floating version for consistency  
-        assert 'rev: "v0"' in precommit_content, "Should use floating Ruff version"
+        assert 'rev: "v0.12.9"' in precommit_content, "Should use floating Ruff version"
         
         # Should not have pinned versions
         import re
