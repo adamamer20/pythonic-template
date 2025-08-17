@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial project structure
 
-## [{{ cookiecutter.initial_version }}] - {{ cookiecutter._release_date }}
+## [{{ cookiecutter.initial_version }}] - __RELEASE_DATE__
 
 ### Added
 - Initial release
