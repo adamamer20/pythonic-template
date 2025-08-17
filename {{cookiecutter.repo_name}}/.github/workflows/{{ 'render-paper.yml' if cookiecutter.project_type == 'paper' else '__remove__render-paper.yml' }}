@@ -31,12 +31,12 @@ jobs:
           version: pre-release
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '{{ cookiecutter.python_version }}'
+          python-version: '__PY_MAX__'
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
 
@@ -75,7 +75,7 @@ jobs:
           path: ./paper-output
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v3
@@ -84,4 +84,4 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
