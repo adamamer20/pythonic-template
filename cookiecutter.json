@@ -3,18 +3,18 @@
         ".github/workflows/*"
     ],
     "project_name": "My Amazing Library",
-    "package_name": "{{ cookiecutter.project_name|lower|replace(' ', '_')|replace('-', '_') }}",
     "repo_name": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
+    "package_name": "{{ cookiecutter.repo_name|lower|replace('-', '_') }}",
     "author_name": "Adam Amer",
     "author_email": "adam@example.com",
     "github_username": "adamamer20",
     "python_version": "3.12",
     "initial_version": "0.1.0",
-    "ruff_version": "v0.11.13",
     "license": [
         "MIT",
         "Apache-2.0",
-        "BSD-3-Clause"
+        "BSD-3-Clause",
+        "Proprietary"
     ],
     "project_type": [
         "standard",
@@ -30,5 +30,6 @@
         "openai_codex,roo_code",
         "none"
     ],
-    "project_short_description": "A modern Python package"
+    "project_short_description": "A modern Python package",
+    "_release_date": "{% now 'utc', '%Y-%m-%d' %}"
 }
