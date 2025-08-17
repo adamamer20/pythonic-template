@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ['{{ cookiecutter.python_version }}', '3.13']
+        python-version: __PY_MATRIX__
 
     steps:
       - uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
         run: uv run env DEV_TYPECHECK=1 pytest -v
 
       - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.12'
+        if: matrix.python-version == '__PY_MAX__'
         uses: codecov/codecov-action@v5
         with:
           file: ./coverage.xml
