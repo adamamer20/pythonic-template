@@ -287,10 +287,10 @@ def load_config(
 For critical applications, add runtime type checking:
 
 ```python
-# Optional: Add typeguard for runtime checking
-from typeguard import typechecked
+# Optional: Add beartype for runtime checking
+from beartype import beartype
 
-@typechecked
+@beartype
 def critical_function(data: List[int]) -> int:
     """Function with runtime type validation."""
     return sum(data)

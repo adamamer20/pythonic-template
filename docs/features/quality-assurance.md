@@ -184,15 +184,15 @@ strict_equality = true
 For critical applications, enable runtime type checking:
 
 ```python
-from typeguard import typechecked
+from beartype import beartype
 
-@typechecked
+@beartype
 def calculate_risk(
     portfolio: List[Dict[str, float]],
     market_data: Dict[str, float]
 ) -> float:
     """Calculate portfolio risk with runtime type validation."""
-    # typeguard will validate types at runtime
+    # beartype will validate types at runtime
     return sum(asset["weight"] * market_data[asset["symbol"]] 
                for asset in portfolio)
 ```
