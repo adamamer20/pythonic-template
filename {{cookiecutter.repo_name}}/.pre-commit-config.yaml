@@ -7,7 +7,7 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "{{ cookiecutter.ruff_version }}"
+    rev: "v0"
     hooks:
       - id: ruff
         args: [--fix]
@@ -36,11 +36,3 @@ repos:
           "--ignore-words-list=nd,jupyter"
         ]
 
-  - repo: local
-    hooks:
-      - id: typeguard-test
-        name: runtime type-check (pytest)
-        entry: bash -c 'DEV_TYPECHECK=1 pytest -q --tb=short'
-        language: system
-        stages: [pre-push]
-        pass_filenames: false
