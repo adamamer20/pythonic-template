@@ -4,61 +4,14 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
 
 ## Features
 
-### 🚀 **Modern Python Stack**
+### ✨ **Key Features**
 
-- **uv** for ultra-fast package management and dependency resolution
-- **Ruff** for lightning-fast linting and formatting
-- **pytest** with comprehensive test configuration
-- **MkDocs Material** for beautiful documentation
-- **beartype** for runtime type checking
-
-### 🤖 **AI-Powered Development**
-
-- **Claude Code CLI** integration for AI-assisted coding
-- **OpenAI Codex** support via AGENTS.md
-- **Roo Code** with Qdrant vector database and Ollama
-- Configurable AI agent selection (all, specific agents, or none)
-- Automatic devcontainer setup for selected agents
-
-### 🐳 **Advanced Container Development**
-
-- **Multi-stage Dockerfile** with optimized caching
-- **Docker Compose** orchestration for development services
-- **VS Code devcontainer** with proper port forwarding
-- **Conditional installations** based on project configuration
-- **Docker-in-Docker** support for containerized workflows
-
-### 📄 **Academic Paper Support**
-
-- **Quarto** integration for scientific paper authoring
-- **Marimo** for interactive data analysis and visualization
-- **Automatic paper rendering** to HTML and PDF
-- **GitHub Actions** for paper deployment
-- **Citation management** with BibTeX support
-- **Mathematical expressions** with MathJax
-
-### 🛡️ **Quality Assurance**
-
-- Pre-commit hooks for automatic code quality
-- GitHub Actions CI/CD pipelines
-- Dependabot for automated dependency updates
-- Full type hints with runtime validation
-- Comprehensive test coverage
-
-### 📚 **Documentation & Developer Experience**
-
-- Material for MkDocs with modern theme
-- **Makefile-driven development** workflow
-- **Cruft** for template synchronization
-- Environment variable management
-- Professional project structure
-
-### 🔧 **DevOps Ready**
-
-- GitHub Actions for CI, building, and publishing
-- Automated dependency updates with auto-merge
-- PyPI publishing with trusted publishing
-- Documentation deployment to GitHub Pages
+- **Modern Python tooling**: uv, Ruff, pytest, MkDocs Material, beartype
+- **AI-powered development**: Claude Code CLI, OpenAI Codex, Roo Code integration
+- **Advanced containerization**: Multi-stage Docker, VS Code devcontainers, service orchestration
+- **Academic paper support**: Quarto integration, automatic rendering, citation management
+- **Quality assurance**: Pre-commit hooks, GitHub Actions CI/CD, automated dependency updates
+- **Developer experience**: Makefile-driven workflow, template synchronization with Cruft
 
 ## Quick Start
 
@@ -231,87 +184,13 @@ If you selected AI agents during setup:
 
 The devcontainer automatically configures your selected agents!
 
-## Key Features Explained
+## Additional Information
 
-### 🔍 **Runtime Type Checking**
-
-The template uses **beartype** for runtime type safety:
-
-```python
-from beartype import beartype
-
-@beartype
-def process_data(items: list[str]) -> dict[str, int]:
-    return {item: len(item) for item in items}
-
-# beartype provides runtime type validation at function call time
-```
-
-Set `DEV_TYPECHECK=1` in your `.env` file to enable runtime type validation during testing.
-
-### 📦 **Modern Package Management**
-
-- Uses **uv** for fast dependency resolution
-- Lock files for reproducible environments
-- Development dependency groups
-- Easy extras configuration
-
-### 🤖 **Automated Quality**
-
-- **Ruff** for fast linting and formatting
-- **Pre-commit** hooks prevent bad commits
-- **Dependabot** keeps dependencies updated
-- **GitHub Actions** for continuous integration
-
-### 📚 **Beautiful Documentation**
-
-- **Material for MkDocs** with modern theme
-- **mkdocstrings** for automatic API documentation
-- **MathJax** support for mathematical expressions
-- **Mermaid** diagrams support
-
-### 🐳 **Advanced Docker Support**
-
-Multi-stage Docker configuration with:
-
-- **Base, deps, builder, runtime, development** stages for optimal caching
-- **Fish shell** for better development experience
-- **Conditional installations** based on project configuration
-- **Docker Compose** orchestration for complex development environments
-- **VS Code devcontainer** with automatic port forwarding
-- **AI service integration** (Qdrant, Ollama) when using Roo Code
-
-### 🤖 **AI Agent Integration**
-
-Choose your AI development assistants:
-
-- **Claude Code CLI**: Official Anthropic CLI for AI-assisted coding
-- **OpenAI Codex**: Integration via AGENTS.md instructions
-- **Roo Code**: Advanced AI with vector database and local LLM
-- **Combinations**: Mix and match agents as needed
-- **Automatic setup**: Devcontainer configures everything for you
-
-### 📄 **Academic Paper Workflow**
-
-For `project_type="paper"`:
-
-- **Quarto integration** for scientific authoring
-- **Marimo** for interactive data analysis and visualization
-- **paper/paper.qmd** with comprehensive template
-- **Automatic rendering** to HTML and PDF via GitHub Actions
-- **Citation management** with BibTeX support
-- **Mathematical expressions** with MathJax
-- **Paper-specific Make commands**: `make paper-render`, `make paper-preview`
+For detailed information about features, configuration options, and best practices, see the [full documentation](https://github.com/adamamer20/pythonic-template/tree/main/docs).
 
 ## GitHub Actions Workflows
 
-The template includes comprehensive workflows:
-
-1. **CI** (`ci.yml`): Run tests, linting, and type checking on every push/PR
-2. **Build** (`build.yml`): Build packages across multiple OS/Python versions
-3. **Publish** (`publish.yml`): Publish to PyPI on release
-4. **Docs** (`docs.yml`): Deploy documentation to GitHub Pages
-5. **Paper Rendering** (`render-paper.yml`): Automatically render academic papers (paper projects only)
+The template includes CI/CD workflows for testing, building, publishing to PyPI, documentation deployment, and paper rendering (for academic projects).
 
 ## Template Synchronization
 
@@ -337,41 +216,6 @@ make setup          # Re-setup environment with new changes
 
 This will apply template changes while preserving your customizations. The updated `.cruft.json` tracks your configuration for seamless updates.
 
-## Best Practices Included
-
-- ✅ **PEP 518** compliant `pyproject.toml`
-- ✅ **Src layout** for proper package structure
-- ✅ **Runtime type safety** with beartype
-- ✅ **Makefile-driven development** workflow
-- ✅ **Advanced containerization** with multi-stage Docker
-- ✅ **AI agent integration** for modern development
-- ✅ **Academic paper support** with Quarto
-- ✅ **Template synchronization** with Cruft
-- ✅ **Comprehensive testing** with pytest and coverage
-- ✅ **Modern tooling** (uv, ruff, pre-commit)
-- ✅ **Professional documentation** with MkDocs Material
-- ✅ **CI/CD ready** with GitHub Actions
-- ✅ **Security** with dependabot and automated updates
-- ✅ **Outstanding developer experience** with VS Code devcontainers
-
-## New in This Release
-
-### 🚀 **Major Enhancements**
-
-- **AI Agent Integration**: Claude Code CLI, OpenAI Codex, Roo Code support
-- **Academic Paper Workflows**: Quarto integration for scientific authoring
-- **Advanced Devcontainers**: Multi-stage Docker with service orchestration
-- **Makefile-Centric Development**: Centralized command hub for all tasks
-- **Enhanced Type Checking**: Replaced typeguard with beartype for runtime validation
-- **Template Versioning**: Cruft integration for seamless updates
-
-### 🔧 **Technical Improvements**
-
-- Multi-stage Dockerfile with optimized layer caching
-- Docker Compose for complex development environments
-- Conditional installations based on project configuration
-- Enhanced VS Code devcontainer with proper port forwarding
-- Qdrant vector database and Ollama integration for AI workflows
 
 ## License
 
