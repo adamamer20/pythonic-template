@@ -72,9 +72,9 @@ publish: ## Publish package to PyPI (requires authentication)
 # Development workflow commands
 
 upgrade: ## Upgrade all dependencies
-        @echo "⬆️  Upgrading dependencies..."
-        uv sync --upgrade
-
+upgrade: ## Upgrade all dependencies
+	@echo "⬆️  Upgrading dependencies..."
+	uv sync --upgrade
 check: quality test ## Run all quality checks and tests
 	@echo "✅ All checks completed!"
 
