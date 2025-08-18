@@ -184,10 +184,6 @@ If you selected AI agents during setup:
 
 The devcontainer automatically configures your selected agents!
 
-## Additional Information
-
-For detailed information about features, configuration options, and best practices, see the [full documentation](https://github.com/adamamer20/pythonic-template/tree/main/docs).
-
 ## GitHub Actions Workflows
 
 The template includes CI/CD workflows for testing, building, publishing to PyPI, documentation deployment, and paper rendering (for academic projects).
