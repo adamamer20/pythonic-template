@@ -465,6 +465,17 @@ def test_cruft_configuration():
         assert "context" in cruft_data
         assert "cookiecutter" in cruft_data["context"]
         
+        # Check commit field is set to a valid 40-character SHA hash (not null)
+        commit = cruft_data.get("commit")
+        assert commit is not None, "Commit field should not be null after post-generation hook"
+        assert isinstance(commit, str), "Commit should be a string"
+        assert len(commit) == 40, f"Commit should be 40 characters (SHA hash), got {len(commit)}: {commit}"
+        # Verify it's a valid hexadecimal string
+        try:
+            int(commit, 16)
+        except ValueError:
+            assert False, f"Commit should be a valid hexadecimal SHA hash, got: {commit}"
+        
         # Check new fields are tracked
         context = cruft_data["context"]["cookiecutter"]
         assert "project_type" in context

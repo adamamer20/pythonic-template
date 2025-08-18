@@ -60,3 +60,7 @@ mkdocs build
 ## Environment Variables
 
 - `DEV_TYPECHECK=1`: Enable runtime type checking with beartype
+
+## Python Version
+
+This project requires Python {{ cookiecutter.python_version }}+ and follows modern Python practices.

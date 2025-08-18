@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the Pythonic Template! This guide
 
 ### Prerequisites
 
-- Python 3.13+
+- Python {{ cookiecutter.python_version }}+
 - [uv](https://github.com/astral-sh/uv) for dependency management
 - Git for version control
 
@@ -81,7 +81,7 @@ pytest
 
 ### Code Style
 
-- **Python 3.13+** syntax and features
+- **Python {{ cookiecutter.python_version }}+** syntax and features
 - **Type hints** for all function signatures
 - **NumPy-style docstrings** for all public functions
 - **PEP 8** compliance (enforced by Ruff)

@@ -60,7 +60,7 @@ When you use this template, you get a fully configured Python project with:
 
 This template is optimized for:
 
-- **Python 3.13+** with modern features
+- **Python {{ cookiecutter.python_version }}+** with modern features
 - **Pop OS 24.04** (but works on any Linux/macOS/Windows)
 - **CUDA 12** support for GPU-accelerated projects
 - **Professional development workflows**

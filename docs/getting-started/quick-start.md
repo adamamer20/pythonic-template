@@ -4,7 +4,7 @@ Get up and running with Pythonic Template in just a few minutes!
 
 ## Prerequisites
 
-- **Python 3.13+** installed on your system
+- **Python {{ cookiecutter.python_version }}+** installed on your system
 - **Git** for version control
 - **uv** (recommended) or **pip** for package management
 
@@ -44,7 +44,7 @@ author_name [Your Name]: Adam Amer
 author_email [your.email@example.com]: adam@example.com
 github_username [yourusername]: adamamer20
 project_description [A modern Python project]: A high-performance machine learning library
-python_version [3.13]: 
+python_version [{{ cookiecutter.python_version }}]: 
 license [MIT]: 
 include_docker [y]: 
 include_github_actions [y]: 

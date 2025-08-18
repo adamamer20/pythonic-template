@@ -301,7 +301,7 @@ def critical_function(data: List[int]) -> int:
 ```toml
 # pyproject.toml
 [tool.mypy]
-python_version = "3.13"
+python_version = "{{ cookiecutter.python_version }}"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -400,7 +400,7 @@ The template supports modern Python versions:
 ```toml
 # pyproject.toml
 [project]
-requires-python = ">=3.13"
+requires-python = ">={{ cookiecutter.python_version }}"
 
 # Support for multiple versions in CI
 [tool.ruff]

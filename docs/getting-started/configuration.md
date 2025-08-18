@@ -27,7 +27,7 @@ When you run `cookiecutter`, you'll be asked to configure these variables:
 
 | Variable | Description | Default | Options |
 |----------|-------------|---------|---------|
-| `python_version` | Minimum Python version | "3.13" | "3.11", "3.12", "3.13" |
+| `python_version` | Minimum Python version | "{{ cookiecutter.python_version }}" | "3.11", "3.12", "3.13", "3.14+" |
 | `license` | Project license | "MIT" | "MIT", "Apache-2.0", "GPL-3.0", "BSD-3-Clause" |
 
 ### Features (y/n)

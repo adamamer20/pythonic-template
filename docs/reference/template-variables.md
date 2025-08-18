@@ -108,7 +108,7 @@ Contact email for the project maintainer.
 
 **Type:** String (Choice)
 **Default:** `"3.12"`
-**Options:** `["3.11", "3.12", "3.13"]`
+**Options:** `["3.11", "3.12", "3.13", "3.14+"]`
 
 Minimum Python version required for the project.
 
@@ -463,7 +463,7 @@ def validate_email(email: str) -> bool:
     "project_description": "A modern Python project",
     "author_name": "Your Name",
     "author_email": "your.email@example.com",
-    "python_version": "3.13",
+    "python_version": "{{ cookiecutter.python_version }}",
     "use_docker": "y",
     "use_github_actions": "y",
     "use_pre_commit": "y",
@@ -493,7 +493,7 @@ cookiecutter https://github.com/your-org/pythonic-template \
     project_description="High-performance enterprise API framework" \
     author_name="Enterprise Team" \
     author_email="team@enterprise.com" \
-    python_version="3.12" \
+    python_version="{{ cookiecutter.python_version }}" \
     license="Proprietary"
 ```
 
@@ -504,7 +504,7 @@ cookiecutter https://github.com/your-org/pythonic-template \
     --no-input \
     project_name="ml-pipeline" \
     project_description="Machine learning pipeline for predictive analytics" \
-    python_version="3.13" \
+    python_version="{{ cookiecutter.python_version }}" \
     use_docker="y"
 ```
 

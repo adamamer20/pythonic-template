@@ -10,7 +10,7 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
 
 ### Prerequisites
 
-- Python 3.13+
+- Python {{ cookiecutter.python_version }}+
 - [uv](https://github.com/astral-sh/uv) for package management
 - Git
 
@@ -178,6 +178,38 @@ We maintain high standards:
 - **Ruff Score**: 10/10 (no warnings)
 - **Documentation**: All public APIs documented
 - **Template Quality**: Generated projects must pass all checks
+
+## 🔧 GitHub Actions Version Policy
+
+We maintain consistency across GitHub Actions versions:
+
+### Action Version Standards
+
+- **Pin to major versions** (e.g., `@v5`, `@v6`) for stability
+- **Use latest stable versions** of all actions
+- **Update consistently** across all workflows
+- **Use Dependabot** for automated updates
+
+### Current Standard Versions
+
+| Action | Version | Purpose |
+|--------|---------|----------|
+| `actions/checkout` | `@v4` | Repository checkout |
+| `actions/setup-python` | `@v5` | Python setup |
+| `astral-sh/setup-uv` | `@v6` | UV package manager |
+| `codecov/codecov-action` | `@v5` | Coverage reporting |
+| `actions/configure-pages` | `@v5` | GitHub Pages setup |
+| `actions/deploy-pages` | `@v5` | GitHub Pages deployment |
+| `actions/upload-pages-artifact` | `@v3` | Pages artifact upload |
+
+### Updating Action Versions
+
+When updating actions:
+
+1. **Check release notes** for breaking changes
+2. **Update all workflows** consistently
+3. **Test thoroughly** with template generation
+4. **Update this documentation** with new versions
 
 ## 🎯 Areas for Contribution
 

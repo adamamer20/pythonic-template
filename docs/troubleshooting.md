@@ -27,17 +27,17 @@ brew install cookiecutter
 
 **Error:**
 ```bash
-Python 3.13+ is required but Python 3.10 found
+Python {{ cookiecutter.python_version }}+ is required but Python 3.10 found
 ```
 
 **Solution:**
 ```bash
-# Install Python 3.13 with pyenv
-pyenv install 3.13.0
-pyenv global 3.13.0
+# Install Python {{ cookiecutter.python_version }} with pyenv
+pyenv install {{ cookiecutter.python_version }}.0
+pyenv global {{ cookiecutter.python_version }}.0
 
 # Or with conda
-conda install python=3.13
+conda install python={{ cookiecutter.python_version }}
 
 # Verify version
 python --version
