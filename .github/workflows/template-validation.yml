@@ -25,15 +25,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install uv
+      - name: Install uv (manage Python)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          manage-python: true
+          python-version: ${{ matrix.python-version }}
 
       - name: Install template dependencies
         run: uv sync --all-extras
@@ -45,7 +42,7 @@ jobs:
 
       - name: Generate test project
         run: |
-          uv run cookiecutter . --no-input \
+          uv run cookiecutter . --no-input --overwrite-if-exists \
             python_version=${{ matrix.python-version }} \
             use_docker=${{ matrix.use-docker }} \
             --output-dir /tmp/test-projects
@@ -53,7 +50,7 @@ jobs:
       - name: Test generated project
         working-directory: /tmp/test-projects/my-amazing-library
         run: |
-          # Install uv in the generated project
+          # Sync the generated project's environment (uses uv installed on the runner)
           uv sync --all-extras
           
           # Run linting
@@ -80,15 +77,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install uv
+      - name: Install uv (manage Python)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          manage-python: true
+          python-version: '3.12'
 
       - name: Sync environment
         run: uv sync --all-extras

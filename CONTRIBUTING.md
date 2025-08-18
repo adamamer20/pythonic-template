@@ -23,14 +23,16 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
    ```
 
 2. **Install development dependencies** (via Makefile):
+
    ```bash
    make setup  # or: make dev-install
    ```
+
    This runs `uv sync --all-extras` to create an isolated environment and install dev tools consistently.
 
 3. **Install pre-commit hooks**:
    ```bash
-   pre-commit install
+   uv run pre-commit install
    ```
 
 4. **Test the template**:

@@ -13,15 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install uv
+      - name: Install uv (manage Python)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          manage-python: true
+          python-version: '3.12'
 
       - name: Sync environment
         run: uv sync --all-extras
@@ -33,4 +30,5 @@ jobs:
         run: uv build
 
       - name: Publish package to PyPI
+        if: ${{ !github.event.release.prerelease }}
         uses: pypa/gh-action-pypi-publish@release/v1

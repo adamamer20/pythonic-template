@@ -2,6 +2,7 @@
 """Test for cruft tracking functionality."""
 
 import json
+import shutil
 import re
 import subprocess
 import tempfile
@@ -18,17 +19,20 @@ def test_cruft_commit_is_valid_sha():
         template_path = ROOT
         
         # Generate a test project
-        result = subprocess.run([
+        uv = shutil.which("uv")
+        cmd = [
+            *( ["uv", "run"] if uv else [] ),
             "cookiecutter",
             str(template_path),
             "--no-input",
             "--overwrite-if-exists",
             "project_name=Test Project",
             "repo_name=test-project",
-            "-o", str(temp_path)
-        ], capture_output=True, text=True)
+            "-o", str(temp_path),
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True)
         
-        assert result.returncode == 0, f"cookiecutter failed: {result.stderr}"
+        assert result.returncode == 0, f"cookiecutter failed:\nSTDERR:\n{result.stderr}\nSTDOUT:\n{result.stdout}"
             
         # Check .cruft.json
         cruft_file = temp_path / "test-project" / ".cruft.json"
@@ -41,4 +45,3 @@ def test_cruft_commit_is_valid_sha():
         
         # Validate it's a 40-character hex string (full SHA)
         assert re.fullmatch(r"[0-9a-f]{40}", commit), f"Invalid commit SHA format: {commit}"
-

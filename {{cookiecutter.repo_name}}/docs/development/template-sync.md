@@ -66,7 +66,7 @@ During project generation, the post-generation hook (`hooks/post_gen_project.py`
 | `__PY_MIN__` | Minimum Python version | `{{ cookiecutter.python_version }}` |
 | `__PY_MATRIX__` | Python version matrix for CI | `["{{ cookiecutter.python_version }}", "3.14"]` |
 | `__PY_MAX__` | Maximum supported Python version | Latest available version |
-| `__PY_SHORT__` | Digits-only short version used to build Ruff target | `{{ cookiecutter.python_version | replace('.', '') }}` |
+| `__PY_SHORT__` | Digits-only short version used to build Ruff target | `{{ cookiecutter.python_version \| replace('.', '') }}` |
 | `__PY_CLASSIFIERS__` | Python classifier strings for pyproject.toml | Generated based on supported versions |
 | `__RELEASE_DATE__` | Current date for changelog | Today's date in YYYY-MM-DD format |
 

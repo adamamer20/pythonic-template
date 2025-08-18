@@ -24,15 +24,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '__PY_MAX__'
-
-      - name: Install uv
+      - name: Install uv (manage Python)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          manage-python: true
+          python-version: '__PY_MAX__'
 
       - name: Install dependencies
         run: uv sync --extra docs

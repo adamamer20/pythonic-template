@@ -35,14 +35,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install uv via GitHub Action
+    - name: Install uv (manage Python)
       uses: astral-sh/setup-uv@v6
       with:
         enable-cache: true
+        manage-python: true
+        python-version: ${{ matrix.python-version }}
     - name: Sync environment (dev dependencies)
       run: |
         uv sync --all-extras

@@ -38,6 +38,8 @@ def run_silent(cmd: list[str]) -> tuple[int, str]:
     """Run command silently and return (returncode, stdout)."""
     try:
         result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+        if result.returncode != 0 and result.stderr:
+            print(f"[DEBUG] Command failed: {' '.join(cmd)}\n{result.stderr}")
         return result.returncode, result.stdout or ""
     except Exception:
         return 1, ""
@@ -260,13 +262,13 @@ def setup_cruft_tracking():
                 break
 
         # Method 1: If template is a local path, try to get its commit
-        if template and Path(template).exists() and (Path(template) / ".git").exists():
+        if not known_commit and template and Path(template).exists() and (Path(template) / ".git").exists():
             known_commit = _run_command(["git", "rev-parse", "HEAD"], cwd=template)
             if known_commit:
                 print(f"[CRUFT] Found commit from template path: {template}")
 
         # Method 2: If template is a remote URL and no env override, try git ls-remote
-        if not known_commit and template.startswith(("http://", "https://", "git@", "git://")):
+        if not known_commit and isinstance(template, str) and template.startswith(("http://", "https://", "git@", "git://")):
             remote_output = _run_command(["git", "ls-remote", template, "HEAD"])
             if remote_output:
                 known_commit = remote_output.split()[0]
@@ -274,12 +276,15 @@ def setup_cruft_tracking():
 
         # Method 3: Last-ditch local probing (without persisting paths)
         if not known_commit:
-            for probe in [
+            probes = [
                 Path("..") / "pythonic-template",
                 Path.home() / "pythonic-template",
-                # Extract repo name from GitHub URL and look locally
-                Path.home() / template.split('/')[-1] if template.startswith('https://github.com') else None,
-            ]:
+            ]
+            if isinstance(template, str) and template.startswith("https://github.com"):
+                repo_name = template.rstrip("/").split("/")[-1]
+                if repo_name:
+                    probes.append(Path.home() / repo_name)
+            for probe in probes:
                 if probe and (probe / ".git").exists():
                     sha = _run_command(["git", "rev-parse", "HEAD"], cwd=str(probe))
                     if sha:

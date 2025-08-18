@@ -1,4 +1,8 @@
-.PHONY: help setup dev-install test test-cov lint format quality pre-commit docs docs-build clean build publish upgrade {% if cookiecutter.project_type == "paper" %} paper-render paper-preview paper-check{% endif %}
+.PHONY: help setup dev-install test test-cov lint format quality pre-commit docs docs-build clean build publish upgrade check ai-setup all {% if cookiecutter.project_type == "paper" %} paper-render paper-preview paper-check{% endif %}
+
+.DEFAULT_GOAL := all
+
+all: help ## Default target shows help
 
 help: ## Show this help message and available commands
 	@echo "🚀 {{ cookiecutter.project_name }} - Development Commands"
@@ -9,7 +13,7 @@ help: ## Show this help message and available commands
 	@echo "💡 Use 'make <command>' to run any command above"
 	@echo "💡 All commands use the Makefile for consistency and ease of use"
 
-setup: dev-install pre-commit ## Complete development environment setup
+setup: dev-install pre-commit-install ## Complete development environment setup
 	@echo "🎉 Development environment setup complete!"
 	@echo "🚀 You're ready to start developing!"
 
@@ -19,7 +23,7 @@ dev-install: ## Install the package in development mode with all dependencies
 
 test: ## Run tests with type checking
 	@echo "🧪 Running tests..."
-	uv run env DEV_TYPECHECK=1 pytest
+	DEV_TYPECHECK=1 uv run pytest
 
 quick-test: ## Run fast tests without type checking
 	@echo "⚡ Running quick tests..."
@@ -44,6 +48,9 @@ quality: lint format pre-commit ## Run all quality checks (lint, format)
 pre-commit: ## Run pre-commit hooks on all files
 	@echo "🔄 Running pre-commit hooks..."
 	uv run pre-commit run --all-files
+
+pre-commit-install: ## Install pre-commit hooks
+	uv run pre-commit install
 
 docs: ## Serve documentation locally
 	@echo "📚 Starting documentation server..."
@@ -72,12 +79,14 @@ publish: ## Publish package to PyPI (requires authentication)
 # Development workflow commands
 
 upgrade: ## Upgrade all dependencies
-upgrade: ## Upgrade all dependencies
 	@echo "⬆️  Upgrading dependencies..."
 	uv sync --upgrade
 
 check: quality test ## Run all quality checks and tests
 	@echo "✅ All checks completed!"
+
+ai-setup: ## AI tooling setup placeholder (customize per project)
+	@echo "🤖 AI setup not configured by default. Customize this target as needed."
 
 {% if cookiecutter.project_type == "paper" %}
 # Paper-specific commands

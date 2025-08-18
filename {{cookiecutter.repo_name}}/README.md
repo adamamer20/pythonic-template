@@ -64,7 +64,7 @@ print(f"{{ cookiecutter.project_name }} version: {{ "{" }}{{ cookiecutter.packag
 
 2. Install dependencies:
    ```bash
-   uv pip install -e .[dev]
+   make setup  # or: uv sync --all-extras
    ```
 
 3. Install pre-commit hooks:
@@ -76,23 +76,23 @@ print(f"{{ cookiecutter.project_name }} version: {{ "{" }}{{ cookiecutter.packag
 
 ```bash
 # Run tests
-pytest
+uv run pytest
 
 # Run tests with type checking
-DEV_TYPECHECK=1 pytest
+DEV_TYPECHECK=1 uv run pytest
 
 # Run linting and formatting
-ruff check .
-ruff format .
+uv run ruff check .
+uv run ruff format .
 
 # Run pre-commit on all files
-pre-commit run --all-files
+uv run pre-commit run --all-files
 
 # Serve documentation locally
-mkdocs serve
+uv run mkdocs serve
 
 # Build documentation
-mkdocs build
+uv run mkdocs build
 ```
 
 ### Environment Variables
