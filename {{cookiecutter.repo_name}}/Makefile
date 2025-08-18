@@ -72,6 +72,7 @@ publish: ## Publish package to PyPI (requires authentication)
 # Development workflow commands
 
 upgrade: ## Upgrade all dependencies
+upgrade: ## Upgrade all dependencies
 	@echo "⬆️  Upgrading dependencies..."
 	uv sync --upgrade
 
