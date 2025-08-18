@@ -44,16 +44,13 @@ jobs:
         run: uv run pytest -v --cov={{ cookiecutter.package_name }} --cov-report=xml
 
       - name: Test with runtime type checking
-        run: uv run env DEV_TYPECHECK=1 pytest -v
+        run: DEV_TYPECHECK=1 uv run pytest -v
 
       - name: Upload coverage to Codecov
-    - name: Upload coverage to Codecov
-      if: matrix.python-version == '__PY_MAX__'
-      uses: codecov/codecov-action@v5
-      with:
-        files: ./coverage.xml
-        fail_ci_if_error: false
-          file: ./coverage.xml
+        if: matrix.python-version == '__PY_MAX__'
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
           fail_ci_if_error: false
 
   auto-merge:

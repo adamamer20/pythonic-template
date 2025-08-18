@@ -42,6 +42,9 @@ format: ## Format code with ruff
 	@echo "🎨 Formatting code..."
 	uv run ruff format .
 
+fmt: format ## Alias for format
+ 
+
 quality: lint format pre-commit ## Run all quality checks (lint, format)
 	@echo "✅ All quality checks completed!"
 
