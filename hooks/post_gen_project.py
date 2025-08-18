@@ -6,6 +6,7 @@ configures Python versions across the project.
 """
 
 import json
+import os
 import re
 import subprocess
 from datetime import date
@@ -43,11 +44,9 @@ def run_silent(cmd: list[str]) -> tuple[int, str]:
 
 
 def normalize_version(version_str: str) -> str | None:
-    """Normalize version string to X.Y.Z format, filtering out dev/pre-releases."""
+    """Normalize version string to X.Y.Z format."""
     version_str = version_str.strip()
     if not re.match(r"^\d+\.\d+\.\d+$", version_str):
-        return None
-    if re.search(r"[abrc]|dev", version_str, re.I):
         return None
     return version_str
 
@@ -111,12 +110,13 @@ def discover_from_pyenv() -> list[str] | None:
 
 
 def discover_from_endoflife() -> list[str] | None:
-    """Discover Python versions using endoflife.date API."""
-    returncode, output = run_silent(["curl", "-sS", "https://endoflife.date/api/python.json"])
-    if returncode != 0 or not output.strip():
-        return None
-    
+    """Discover Python versions using endoflife.date API (stdlib only)."""
     try:
+        import urllib.request  # noqa: WPS433 (stdlib import inside function for portability)
+        with urllib.request.urlopen("https://endoflife.date/api/python.json", timeout=5) as resp:
+            output = resp.read().decode("utf-8")
+        if not output.strip():
+            return None
         data = json.loads(output)
     except Exception:
         return None
@@ -198,6 +198,7 @@ def setup_python_versions():
         "README.md",
         "pyproject.toml",
         "docs/development/changelog.md",
+        "docs/development/contributing.md",
     ]
     
     # Replace tokens in files
@@ -250,13 +251,21 @@ def setup_cruft_tracking():
         template = data.get("template", "")
         known_commit = None
 
+        # Prefer explicit environment-provided commit hashes (offline friendly)
+        for env_var in ("COOKIECUTTER_TEMPLATE_COMMIT", "GITHUB_SHA"):
+            val = os.environ.get(env_var)
+            if val and re.fullmatch(r"[0-9a-f]{40}", val):
+                known_commit = val
+                print(f"[CRUFT] Using commit from env {env_var}: {val[:8]}")
+                break
+
         # Method 1: If template is a local path, try to get its commit
         if template and Path(template).exists() and (Path(template) / ".git").exists():
             known_commit = _run_command(["git", "rev-parse", "HEAD"], cwd=template)
             if known_commit:
                 print(f"[CRUFT] Found commit from template path: {template}")
 
-        # Method 2: If template is a remote URL, try git ls-remote
+        # Method 2: If template is a remote URL and no env override, try git ls-remote
         if not known_commit and template.startswith(("http://", "https://", "git@", "git://")):
             remote_output = _run_command(["git", "ls-remote", template, "HEAD"])
             if remote_output:

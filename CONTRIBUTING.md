@@ -22,10 +22,11 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
    cd pythonic-template
    ```
 
-2. **Install development dependencies**:
+2. **Install development dependencies** (via Makefile):
    ```bash
-   uv pip install -e .[dev]
+   make setup  # or: make dev-install
    ```
+   This runs `uv sync --all-extras` to create an isolated environment and install dev tools consistently.
 
 3. **Install pre-commit hooks**:
    ```bash
@@ -56,7 +57,7 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
 - **Package Management**: uv only, no manual requirements.txt
 - **Code Quality**: Ruff for linting and formatting
 - **Testing**: pytest with comprehensive coverage
-- **Type Checking**: beartype for runtime type checking
+- **Type Checking**: beartype for runtime type checking (typically toggled via `DEV_TYPECHECK=1` in development to avoid overhead in CI/release)
 - **Documentation**: NumPy-style docstrings, MkDocs Material
 - **Git Hooks**: pre-commit for automated quality checks
 
@@ -201,6 +202,8 @@ We maintain consistency across GitHub Actions versions:
 | `actions/configure-pages` | `@v5` | GitHub Pages setup |
 | `actions/deploy-pages` | `@v5` | GitHub Pages deployment |
 | `actions/upload-pages-artifact` | `@v3` | Pages artifact upload |
+
+These versions are defined in the workflow files under `.github/workflows/*.yml`.
 
 ### Updating Action Versions
 

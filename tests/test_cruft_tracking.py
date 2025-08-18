@@ -13,10 +13,14 @@ def test_cruft_commit_is_valid_sha():
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
         
+        # Compute template path relative to repo root
+        ROOT = Path(__file__).resolve().parent.parent
+        template_path = ROOT
+        
         # Generate a test project
         result = subprocess.run([
-            "cookiecutter", 
-            "/home/aamer1/pythonic-template",
+            "cookiecutter",
+            str(template_path),
             "--no-input",
             "--overwrite-if-exists",
             "project_name=Test Project",
@@ -24,33 +28,17 @@ def test_cruft_commit_is_valid_sha():
             "-o", str(temp_path)
         ], capture_output=True, text=True)
         
-        if result.returncode != 0:
-            print(f"cookiecutter failed: {result.stderr}")
-            return False
+        assert result.returncode == 0, f"cookiecutter failed: {result.stderr}"
             
         # Check .cruft.json
         cruft_file = temp_path / "test-project" / ".cruft.json"
-        if not cruft_file.exists():
-            print(".cruft.json file not found")
-            return False
+        assert cruft_file.exists(), ".cruft.json file not found"
             
         # Parse and validate
         data = json.loads(cruft_file.read_text())
         commit = data.get("commit")
+        assert commit is not None, "commit field is missing or null"
         
-        if not commit:
-            print("commit field is missing or null")
-            return False
-            
         # Validate it's a 40-character hex string (full SHA)
-        if not re.fullmatch(r"[0-9a-f]{40}", commit):
-            print(f"Invalid commit SHA format: {commit}")
-            return False
-            
-        print(f"✓ Valid commit SHA: {commit[:8]}...")
-        return True
+        assert re.fullmatch(r"[0-9a-f]{40}", commit), f"Invalid commit SHA format: {commit}"
 
-
-if __name__ == "__main__":
-    success = test_cruft_commit_is_valid_sha()
-    exit(0 if success else 1)

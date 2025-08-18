@@ -46,6 +46,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install uv via GitHub Action
       uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
     - name: Install pythonic-template + dev dependencies
       run: |
         uv pip install --system .

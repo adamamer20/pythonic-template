@@ -4,7 +4,7 @@
     ],
     "project_name": "My Amazing Library",
     "repo_name": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
-    "package_name": "{{ cookiecutter.repo_name|lower|replace('-', '_') }}",
+    "package_name": "{{ cookiecutter.repo_name|lower|replace('-', '_')|replace('.', '_') }}",
     "author_name": "Adam Amer",
     "author_email": "adam@example.com",
     "github_username": "adamamer20",

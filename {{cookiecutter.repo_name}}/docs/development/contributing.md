@@ -63,4 +63,4 @@ mkdocs build
 
 ## Python Version
 
-This project requires Python {{ cookiecutter.python_version }}+ and follows modern Python practices.
+This project requires Python __PY_MIN__+ and follows modern Python practices.

@@ -66,7 +66,7 @@ During project generation, the post-generation hook (`hooks/post_gen_project.py`
 | `__PY_MIN__` | Minimum Python version | `{{ cookiecutter.python_version }}` |
 | `__PY_MATRIX__` | Python version matrix for CI | `["{{ cookiecutter.python_version }}", "3.14"]` |
 | `__PY_MAX__` | Maximum supported Python version | Latest available version |
-| `__PY_SHORT__` | Short version for Ruff target | `py{{ cookiecutter.python_version | replace('.', '') }}` |
+| `__PY_SHORT__` | Digits-only short version used to build Ruff target | `{{ cookiecutter.python_version | replace('.', '') }}` |
 | `__PY_CLASSIFIERS__` | Python classifier strings for pyproject.toml | Generated based on supported versions |
 | `__RELEASE_DATE__` | Current date for changelog | Today's date in YYYY-MM-DD format |
 
@@ -77,6 +77,7 @@ The following files are processed for token replacement:
 - `.github/workflows/ci.yml` - CI matrix and Python version references
 - `.github/workflows/docs.yml` - Documentation build Python version
 - `.github/workflows/publish.yml` - Publishing workflow Python version
+- `.github/workflows/render-paper.yml` - Paper rendering workflow Python version (when `project_type` is "paper")
 - `README.md` - Python version requirements
 - `pyproject.toml` - Python version constraints and classifiers
 - `docs/development/changelog.md` - Release date placeholder

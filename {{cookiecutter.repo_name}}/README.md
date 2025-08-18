@@ -18,7 +18,7 @@
 
 - ✨ **Modern Python**: Built with Python __PY_MIN__+ support
 - 🚀 **Fast Development**: Powered by `uv` package manager
-- 🛡️ **Type Safe**: Full type hints with runtime validation via `beartype`
+- 🛡️ **Type Safe**: Full type hints with optional runtime checks via `beartype`
 - 🧪 **Well Tested**: Comprehensive test suite with pytest
 - 📚 **Documentation**: Beautiful docs with Material for MkDocs
 - 🔧 **Developer Experience**: Pre-commit hooks, automated formatting, and linting
@@ -99,7 +99,7 @@ mkdocs build
 
 Create a `.env` file based on `.env.example`:
 
-- `DEV_TYPECHECK=1`: Enable enhanced type validation for beartype
+- `DEV_TYPECHECK=1`: Enable runtime type checking via beartype
 - `LOG_LEVEL=INFO`: Set logging level
 
 ## Contributing
