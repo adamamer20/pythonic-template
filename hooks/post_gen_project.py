@@ -220,39 +220,75 @@ def setup_python_versions():
     print("[PYTHON] Python version setup completed!")
 
 
-def setup_cruft_tracking():
-    """Set up cruft tracking with current template commit."""
-    cruft_file = Path.cwd() / ".cruft.json"
-    if not cruft_file.exists():
-        print("[CRUFT] No .cruft.json file found, skipping cruft setup")
-        return
-    
+def _run_command(cmd: list[str], cwd: str | None = None) -> str | None:
+    """Run a command and return stdout if successful, None otherwise."""
     try:
-        # Try to get current git commit of template
         result = subprocess.run(
-            ["git", "rev-parse", "HEAD"], 
-            capture_output=True, 
-            text=True, 
-            check=False,
-            cwd=Path(__file__).parent.parent  # Template root directory
+            cmd, cwd=cwd, check=False, capture_output=True, text=True
         )
+        return result.stdout.strip() if result.returncode == 0 and result.stdout else None
+    except Exception:
+        return None
+
+
+def setup_cruft_tracking():
+    """Populate .cruft.json 'commit' deterministically without altering 'template'."""
+    cruft_path = Path.cwd() / ".cruft.json"
+    if not cruft_path.exists():
+        print("[CRUFT] No .cruft.json found; skipping")
+        return
+
+    try:
+        # Load and parse .cruft.json safely
+        data = json.loads(cruft_path.read_text(encoding="utf-8"))
         
-        if result.returncode == 0 and result.stdout.strip():
-            template_commit = result.stdout.strip()
-            
-            # Read and update cruft config
-            content = cruft_file.read_text(encoding="utf-8")
-            updated_content = content.replace('"commit": null', f'"commit": "{template_commit}"')
-            
-            if updated_content != content:
-                cruft_file.write_text(updated_content, encoding="utf-8")
-                print(f"[CRUFT] Updated .cruft.json with template commit: {template_commit[:8]}")
-            else:
-                print("[CRUFT] .cruft.json already has commit set")
-        else:
-            print("[CRUFT] Could not determine template commit SHA")
-            
-    except Exception as e:
+        # If already set, leave it alone (idempotent)
+        if data.get("commit"):
+            print(f"[CRUFT] Commit already set: {data['commit'][:8]}")
+            return
+
+        template = data.get("template", "")
+        known_commit = None
+
+        # Method 1: If template is a local path, try to get its commit
+        if template and Path(template).exists() and (Path(template) / ".git").exists():
+            known_commit = _run_command(["git", "rev-parse", "HEAD"], cwd=template)
+            if known_commit:
+                print(f"[CRUFT] Found commit from template path: {template}")
+
+        # Method 2: If template is a remote URL, try git ls-remote
+        if not known_commit and template.startswith(("http://", "https://", "git@", "git://")):
+            remote_output = _run_command(["git", "ls-remote", template, "HEAD"])
+            if remote_output:
+                known_commit = remote_output.split()[0]
+                print(f"[CRUFT] Found commit from remote template: {template}")
+
+        # Method 3: Last-ditch local probing (without persisting paths)
+        if not known_commit:
+            for probe in [
+                Path("..") / "pythonic-template",
+                Path.home() / "pythonic-template",
+                # Extract repo name from GitHub URL and look locally
+                Path.home() / template.split('/')[-1] if template.startswith('https://github.com') else None,
+            ]:
+                if probe and (probe / ".git").exists():
+                    sha = _run_command(["git", "rev-parse", "HEAD"], cwd=str(probe))
+                    if sha:
+                        known_commit = sha
+                        print(f"[CRUFT] Found local template at {probe} (not persisted in .cruft.json)")
+                        break
+
+        if not known_commit:
+            print("[CRUFT] Could not resolve template commit; leaving commit=null")
+            print("[CRUFT] You can run 'cruft update' later to sync with template")
+            return
+
+        # Update only the commit field, preserving template URL
+        data["commit"] = known_commit
+        cruft_path.write_text(json.dumps(data, indent=4), encoding="utf-8")
+        print(f"[CRUFT] Updated .cruft.json with commit: {known_commit[:8]}")
+
+    except (json.JSONDecodeError, OSError) as e:
         print(f"[CRUFT] Failed to set up cruft tracking: {e}")
 
 
