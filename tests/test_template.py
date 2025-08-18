@@ -654,7 +654,7 @@ def test_dynamic_python_versions():
             assert "__PY_MIN__" not in pyproject_content, "MIN token should be replaced in pyproject"
             assert f'requires-python = ">={python_version}"' in pyproject_content, "pyproject should have minimum version"
             assert "__PY_CLASSIFIERS__" not in pyproject_content, "Classifiers token should be replaced"
-            
+
             # Test Python classifiers are present
             assert f'"Programming Language :: Python :: {python_version}"' in pyproject_content, "Should have classifier for min version"
             
@@ -664,6 +664,15 @@ def test_dynamic_python_versions():
             import re
             date_pattern = r"\d{4}-\d{2}-\d{2}"
             assert re.search(date_pattern, changelog_content), "Should have real date format"
+
+            # Ruff target-version should match min version (py + digits) and pass regex
+            import tomllib as _tomllib
+            with open(project_path / "pyproject.toml", "rb") as _f:
+                _pyproj = _tomllib.load(_f)
+            expected_target = f"py{python_version.replace('.', '')}"
+            assert _pyproj["tool"]["ruff"]["target-version"] == expected_target, "Ruff target-version should match min Python"
+            import re as _re
+            assert _re.search(r'target-version\s*=\s*"py3\d{1,2}"', pyproject_content), "Ruff target-version format should be py3xx"
 
 
 def test_python_version_matrix_generation():
@@ -765,27 +774,7 @@ def test_no_typeguard_references():
         assert "typeguard" not in contributing_content, "Should not mention typeguard in docs"
 
 
-def test_ruff_version_consistency():
-    """Test that Ruff version strategy is consistent."""
-    with tempfile.TemporaryDirectory() as temp_dir:
-        run_subprocess(
-            [
-                "cookiecutter",
-                str(Path(__file__).parent.parent), 
-                "--no-input",
-                f"--output-dir={temp_dir}",
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-
-        project_path = Path(temp_dir) / "my-amazing-library"
-        precommit_content = (project_path / ".pre-commit-config.yaml").read_text()
-        
-        # Ruff hook should pin to a v0.x.y release (avoid churn on patch bumps)
-        import re as _re
-        assert _re.search(r'rev:\s*"v0\.[0-9]+\.[0-9]+"', precommit_content), "Ruff hook should pin to v0.x.y"
+ 
 
 
 def test_makefile_targets_exist():

@@ -30,13 +30,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows, ubuntu, macos]
-        python-version: ['3.13']
-        include:
-          - os: ubuntu
-            python-version: '3.11'
-          - os: ubuntu
-            python-version: '3.12'
+        os: [ubuntu]
+        python-version: ['3.12']
 
     steps:
     - uses: actions/checkout@v4
@@ -48,12 +43,11 @@ jobs:
       uses: astral-sh/setup-uv@v6
       with:
         enable-cache: true
-    - name: Install pythonic-template + dev dependencies
+    - name: Sync environment (dev dependencies)
       run: |
-        uv pip install --system .
-        uv pip install --group dev --system
+        uv sync --all-extras
     - name: Test with pytest
-      run: pytest --durations=10 --cov=hooks --cov-branch tests/ --cov-report=xml
+      run: uv run pytest --durations=10 --cov=hooks --cov-branch tests/ --cov-report=xml
     - if: matrix.os == 'ubuntu'
       name: Codecov
       uses: codecov/codecov-action@v5

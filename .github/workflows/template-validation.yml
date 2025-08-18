@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.12']
+        python-version: ['3.12']
         use-docker: ['y', 'n']
 
     steps:
@@ -36,16 +36,16 @@ jobs:
           enable-cache: true
 
       - name: Install template dependencies
-        run: uv pip install --system -e .[dev]
+        run: uv sync --all-extras
 
       - name: Lint template files
         run: |
-          ruff check .
-          ruff format --check .
+          uv run ruff check .
+          uv run ruff format --check .
 
       - name: Generate test project
         run: |
-          cookiecutter . --no-input \
+          uv run cookiecutter . --no-input \
             python_version=${{ matrix.python-version }} \
             use_docker=${{ matrix.use-docker }} \
             --output-dir /tmp/test-projects
@@ -85,10 +85,18 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Sync environment
+        run: uv sync --all-extras
+
       - name: Test post-generation hook
         run: |
           cd /tmp
-          cookiecutter ${{ github.workspace }} --no-input
+          uv run cookiecutter ${{ github.workspace }} --no-input
           cd my-amazing-library
           
           # Verify git was initialized

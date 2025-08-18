@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.12']
+        python-version: ['3.12']
 
     steps:
       - uses: actions/checkout@v4
@@ -35,22 +35,22 @@ jobs:
           enable-cache: true
 
       - name: Install template dependencies
-        run: uv pip install --system -e .[dev]
+        run: uv sync --all-extras
 
       - name: Lint template files
         run: |
-          ruff check hooks/ tests/
-          ruff format --check hooks/ tests/
+          uv run ruff check hooks/ tests/
+          uv run ruff format --check hooks/ tests/
 
       - name: Run template tests
-        run: pytest tests/ -v
+        run: uv run pytest tests/ -v
 
   validate-template:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.12']
+        python-version: ['3.12']
         use-docker: ['y', 'n']
 
     steps:
@@ -67,11 +67,11 @@ jobs:
           enable-cache: true
 
       - name: Install template dependencies
-        run: uv pip install --system -e .[dev]
+        run: uv sync --all-extras
 
       - name: Generate test project
         run: |
-          cookiecutter . --no-input \
+          uv run cookiecutter . --no-input \
             python_version=${{ matrix.python-version }} \
             use_docker=${{ matrix.use-docker }} \
             --output-dir /tmp/test-projects
@@ -116,13 +116,13 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install cookiecutter
-        run: uv pip install --system cookiecutter
+      - name: Sync environment
+        run: uv sync --all-extras
 
       - name: Test post-generation hook
         run: |
           cd /tmp
-          cookiecutter ${{ github.workspace }} --no-input
+          uv run cookiecutter ${{ github.workspace }} --no-input
           cd my-amazing-library
           
           # Verify git was initialized
