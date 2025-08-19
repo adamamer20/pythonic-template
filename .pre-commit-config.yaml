@@ -9,9 +9,11 @@ repos:
       - id: ruff
         types_or: [ python, pyi, jupyter ]
         args: [ --fix ]
+        exclude: '^\{\{cookiecutter\.repo_name\}\}/'
       # Run the formatter.
       - id: ruff-format
         types_or: [ python, pyi, jupyter ]
+        exclude: '^\{\{cookiecutter\.repo_name\}\}/'
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.19.1
@@ -24,7 +26,9 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: check-toml
+        exclude: '^\{\{cookiecutter\.repo_name\}\}/'
       - id: check-yaml
+        exclude: '^\{\{cookiecutter\.repo_name\}\}/'
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
@@ -44,9 +48,11 @@ repos:
           "--config",
           ".markdownlint.json",
         ]
+        exclude: '^\{\{cookiecutter\.repo_name\}\}/'
 
   - repo: https://github.com/jsh9/pydoclint  # For checking docstrings
     rev: 0.6.6
     hooks:
       - id: pydoclint
         args: [--style=numpy, --skip-checking-raises=True, --allow-init-docstring=True]
+        exclude: '^\{\{cookiecutter\.repo_name\}\}/'
