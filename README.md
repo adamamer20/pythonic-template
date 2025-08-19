@@ -35,7 +35,7 @@ A modern, comprehensive Cookiecutter template for Python projects that follows b
    - Project name: "My Amazing Library"
    - Package name: (auto-generated from project name)
    - Author information
-   - Python version ({{ cookiecutter.python_version }}-3.14+, defaults to {{ cookiecutter.python_version }})
+   - Python version (default: 3.12; supports 3.12+)
    - License choice (MIT, Apache-2.0, BSD-3-Clause)
    - **Project type**: "standard" or "paper" (for academic research)
    - **AI agents**: Choose from Claude Code, OpenAI Codex, Roo Code, or combinations
@@ -81,7 +81,7 @@ The template prompts for these variables:
 | `author_name` | Your name | "Adam Amer" | Any string |
 | `author_email` | Your email | "adam@example.com" | Any email |
 | `github_username` | Your GitHub username | "adamamer20" | Any username |
-| `python_version` | Minimum Python version | "{{ cookiecutter.python_version }}" | "{{ cookiecutter.python_version }}" to "3.14+" |
+| `python_version` | Minimum Python version | "3.12" | Any 3.12+ version |
 | `initial_version` | Starting version | "0.1.0" | Any version string |
 | `license` | License type | "MIT" | MIT, Apache-2.0, BSD-3-Clause |
 | **`project_type`** | **Project type** | **"standard"** | **"standard", "paper"** |

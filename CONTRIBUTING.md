@@ -10,7 +10,7 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
 
 ### Prerequisites
 
-- Python {{ cookiecutter.python_version }}+
+- Python 3.12+
 - [uv](https://github.com/astral-sh/uv) for package management
 - Git
 
