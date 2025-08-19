@@ -74,7 +74,7 @@ print(f"{{ cookiecutter.project_name }} version: {{ "{" }}{{ cookiecutter.packag
 3. Install pre-commit hooks:
 
    ```bash
-   pre-commit install
+   uv run pre-commit install
    ```
 
 ### Development Commands

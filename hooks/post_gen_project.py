@@ -31,7 +31,7 @@ except Exception:
     def parse_requires_python(spec: str):  # type: ignore
         m1 = re.search(r">=?\s*3\.(\d+)", spec)
         m2 = re.search(r"<\s*3\.(\d+)", spec)
-        lo = int(m1.group(1)) if m1 else 12
+        lo = int(m1.group(1)) if m1 else 10
         hi = (int(m2.group(1)) - 1) if m2 else lo
         return f"3.{lo}", f"3.{hi}"
 
@@ -184,34 +184,61 @@ def discover_python_versions() -> list[str]:
         except Exception as e:
             print(f"[PYTHON] {method_name} failed: {e}")
 
-    # Fallback to reasonable defaults
-    fallback = ["3.12", "3.13", "3.14"]
+    # Fallback to reasonable defaults derived from the environment
+    try:
+        current_minor = sys.version_info.minor
+    except Exception:
+        current_minor = 12
+    # Start from a conservative floor (3.10) up to current minor, max 3 minors
+    start_minor = max(10, current_minor - 2)
+    end_minor = max(start_minor, current_minor)
+    fallback = [f"3.{m}" for m in range(start_minor, end_minor + 1)]
     print(f"[PYTHON] Using fallback versions: {fallback}")
     return fallback
 
 
 def setup_python_versions():
-    """Set up Python version tokens using shared logic."""
+    """Set up Python version tokens using spec parsing and discovery."""
     # parse_requires_python is resolved at module import time
 
-    # Get min from template context
-    min_version = "{{ cookiecutter.python_version }}".strip()
-    print(f"[PYTHON] Minimum Python version from template: {min_version}")
+    # Accept either a bare minor (e.g., "3.12") or a full spec (e.g., ">=3.12,<3.14")
+    raw_spec = "{{ cookiecutter.python_version }}".strip()
+    print(f"[PYTHON] Python version input from template: {raw_spec}")
 
-    lo, hi = parse_requires_python(f">={min_version}")
-    matrix_versions = [lo] if lo == hi else [lo, hi]
-    max_version = hi
+    if any(ch in raw_spec for ch in ">=<,"):
+        spec = raw_spec
+    else:
+        spec = f">={raw_spec}"
+
+    lo, hi = parse_requires_python(spec)
+    print(f"[PYTHON] Parsed requires-python -> min: {lo}, max: {hi}")
+
+    # Discover available minors, then filter to inclusive [lo..hi]
+    discovered = discover_python_versions()
+    def _to_minor_tuple(s: str) -> tuple[int, int]:
+        ma, mi = s.split(".")
+        return int(ma), int(mi)
+
+    lo_t = _to_minor_tuple(lo)
+    hi_t = _to_minor_tuple(hi)
+
+    filtered = [v for v in discovered if lo_t <= _to_minor_tuple(v) <= hi_t]
+    if not filtered:
+        filtered = [lo]
+
+    # Compute max from filtered list
+    max_version = max(filtered, key=lambda v: _to_minor_tuple(v))
 
     tokens = {
         "__PY_MIN__": lo,
-        "__PY_MATRIX__": json.dumps(matrix_versions),
+        "__PY_MATRIX__": json.dumps(filtered),
         "__PY_MAX__": max_version,
         "__PY_SHORT__": lo.replace(".", ""),
         "__RELEASE_DATE__": date.today().strftime("%Y-%m-%d"),
     }
 
     classifiers = [
-        f'    "Programming Language :: Python :: {v}",' for v in matrix_versions
+        f'    "Programming Language :: Python :: {v}",' for v in filtered
     ]
     tokens["__PY_CLASSIFIERS__"] = "\n".join(classifiers)
 
@@ -415,7 +442,11 @@ def main():
             run_command("pip install -e .[dev]")
             run_command("pip install pre-commit")
 
-        run_command("pre-commit install")
+        # Install pre-commit hooks using uv when available for consistency
+        if uv_available:
+            run_command("uv run pre-commit install")
+        else:
+            run_command("pre-commit install")
         print("[OK] Pre-commit hooks installed")
     except subprocess.CalledProcessError:
         print("[WARN] Dependency installation failed")
