@@ -1,9 +1,9 @@
 # {{ cookiecutter.project_name }}
 
-[![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/ci.yml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/ci.yml)
+[![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/ci.yml/badge.svg)](<https://github.com/{{> cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/ci.yml)
 [![Documentation](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/actions/workflows/docs.yml/badge.svg)](https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.repo_name }}/)
-[![PyPI version](https://badge.fury.io/py/{{ cookiecutter.package_name }}.svg)](https://badge.fury.io/py/{{ cookiecutter.package_name }})
-[![Python versions](https://img.shields.io/pypi/pyversions/{{ cookiecutter.package_name }}.svg)](https://pypi.org/project/{{ cookiecutter.package_name }}/)
+[![PyPI version](https://badge.fury.io/py/{{ cookiecutter.package_name }}.svg)](<https://badge.fury.io/py/{{> cookiecutter.package_name }})
+[![Python versions](https://img.shields.io/pypi/pyversions/{{ cookiecutter.package_name }}.svg)](<https://pypi.org/project/{{> cookiecutter.package_name }}/)
 {%- if cookiecutter.license == "MIT" %}
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 {%- elif cookiecutter.license == "Apache-2.0" %}
@@ -16,7 +16,7 @@
 
 ## Features
 
-- ✨ **Modern Python**: Built with Python __PY_MIN__+ support
+- ✨ **Modern Python**: Built with Python **PY_MIN**+ support
 - 🚀 **Fast Development**: Powered by `uv` package manager
 - 🛡️ **Type Safe**: Full type hints with optional runtime checks via `beartype`
 - 🧪 **Well Tested**: Comprehensive test suite with pytest
@@ -51,23 +51,26 @@ print(f"{{ cookiecutter.project_name }} version: {{ "{" }}{{ cookiecutter.packag
 
 ### Prerequisites
 
-- Python __PY_MIN__+
+- Python **PY_MIN**+
 - [uv](https://github.com/astral-sh/uv) package manager
 
 ### Setup
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}.git
    cd {{ cookiecutter.repo_name }}
    ```
 
 2. Install dependencies:
+
    ```bash
    make setup  # or: uv sync --all-extras
    ```
 
 3. Install pre-commit hooks:
+
    ```bash
    pre-commit install
    ```
@@ -113,6 +116,6 @@ This project is licensed under the {{ cookiecutter.license }} License. See the [
 ## Links
 
 - [Documentation](https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.repo_name }}/)
-- [PyPI Package](https://pypi.org/project/{{ cookiecutter.package_name }}/)
-- [Source Code](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }})
-- [Issue Tracker](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/issues)
+- [PyPI Package](<https://pypi.org/project/{{> cookiecutter.package_name }}/)
+- [Source Code](<https://github.com/{{> cookiecutter.github_username }}/{{ cookiecutter.repo_name }})
+- [Issue Tracker](<https://github.com/{{> cookiecutter.github_username }}/{{ cookiecutter.repo_name }}/issues)

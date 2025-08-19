@@ -17,7 +17,7 @@ setup: dev-install pre-commit-install ## Complete development environment setup
 	@echo "🎉 Development environment setup complete!"
 	@echo "🚀 You're ready to start developing!"
 
-dev-install: ## Install the package in development mode with all dependencies  
+dev-install: ## Install the package in development mode with all dependencies
 	@echo "📦 Installing development dependencies..."
 	uv sync --all-extras
 
@@ -43,7 +43,7 @@ format: ## Format code with ruff
 	uv run ruff format .
 
 fmt: format ## Alias for format
- 
+
 
 quality: lint format pre-commit ## Run all quality checks (lint, format)
 	@echo "✅ All quality checks completed!"

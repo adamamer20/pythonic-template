@@ -17,6 +17,7 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
 ### Development Setup
 
 1. **Fork and clone the repository**:
+
    ```bash
    git clone https://github.com/your-username/pythonic-template.git
    cd pythonic-template
@@ -31,15 +32,17 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
    This runs `uv sync --all-extras` to create an isolated environment and install dev tools consistently.
 
 3. **Install pre-commit hooks**:
+
    ```bash
    uv run pre-commit install
    ```
 
 4. **Test the template**:
+
    ```bash
    # Test generating a project
    cookiecutter . --no-input
-   
+
    # Test with different configurations
    cookiecutter . --no-input license=Apache-2.0 use_docker=y
    ```
@@ -75,6 +78,7 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
 ### 1. Making Changes
 
 1. **Create a feature branch**:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -82,13 +86,14 @@ Generate crystal‑clear, Pythonic, fully‑typed, test‑first code that is eas
 2. **Make your changes** following our guidelines
 
 3. **Test your changes**:
+
    ```bash
    # Run tests
    pytest -v
-   
+
    # Test template generation
    make test-template
-   
+
    # Run all quality checks
    pre-commit run --all-files
    ```
@@ -134,6 +139,7 @@ Supported Python versions are derived from `project.requires-python` in `pyproje
 ## 📋 Pull Request Process
 
 1. **Ensure all tests pass**:
+
    ```bash
    pytest
    pre-commit run --all-files
@@ -251,6 +257,7 @@ Looking for ways to help? Consider:
 ## 🙏 Recognition
 
 Contributors will be recognized in:
+
 - README.md contributors section
 - Release notes for significant contributions
 - GitHub contributor insights

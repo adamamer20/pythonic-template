@@ -79,7 +79,7 @@ The template prompts for these variables:
 | `package_name` | Python package name (auto-generated) | (derived from project_name) | Auto-generated |
 | `repo_name` | Repository name (auto-generated) | (derived from project_name) | Auto-generated |
 | `author_name` | Your name | "Adam Amer" | Any string |
-| `author_email` | Your email | "adam@example.com" | Any email |
+| `author_email` | Your email | "<adam@example.com>" | Any email |
 | `github_username` | Your GitHub username | "adamamer20" | Any username |
 | `python_version` | Minimum Python version | "3.12" | Any 3.12+ version |
 | `initial_version` | Starting version | "0.1.0" | Any version string |
@@ -213,7 +213,6 @@ make setup          # Re-setup environment with new changes
 ```
 
 This will apply template changes while preserving your customizations. The updated `.cruft.json` tracks your configuration for seamless updates.
-
 
 ## License
 

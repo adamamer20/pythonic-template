@@ -63,7 +63,7 @@ def get_unique_minors(stable_versions: list[str]) -> list[str]:
         key = f"{major}.{minor}"
         if key not in best_versions or (major, minor, patch) > best_versions[key]:
             best_versions[key] = (major, minor, patch)
-    
+
     return sorted(best_versions.keys(), key=lambda x: tuple(map(int, x.split("."))))
 
 
@@ -71,7 +71,7 @@ def filter_min_versions(minors: list[str], required_min: str) -> list[str]:
     """Filter versions to only include those >= required minimum."""
     min_tuple = tuple(map(int, required_min.split(".")))
     filtered = [
-        version for version in minors 
+        version for version in minors
         if tuple(map(int, version.split("."))) >= min_tuple
     ]
     return filtered or [required_min]
@@ -82,19 +82,19 @@ def discover_from_uv() -> list[str] | None:
     returncode, output = run_silent(["uv", "python", "list", "--releases", "--format", "json"])
     if returncode != 0:
         return None
-    
+
     try:
         data = json.loads(output)
     except Exception:
         return None
-    
+
     stable_versions = []
     for entry in data:
         if entry.get("implementation") == "cpython":
             version = normalize_version(entry.get("version", ""))
             if version:
                 stable_versions.append(version)
-    
+
     return get_unique_minors(stable_versions) if stable_versions else None
 
 
@@ -103,13 +103,13 @@ def discover_from_pyenv() -> list[str] | None:
     returncode, output = run_silent(["pyenv", "install", "-l"])
     if returncode != 0 or not output.strip():
         return None
-    
+
     stable_versions = []
     for line in output.splitlines():
         version = normalize_version(line.strip())
         if version:
             stable_versions.append(version)
-    
+
     return get_unique_minors(stable_versions) if stable_versions else None
 
 
@@ -124,7 +124,7 @@ def discover_from_endoflife() -> list[str] | None:
         data = json.loads(output)
     except Exception:
         return None
-    
+
     stable_versions = []
     for entry in data:
         # Try latest version first
@@ -137,14 +137,14 @@ def discover_from_endoflife() -> list[str] | None:
             cycle = entry.get("cycle", "")
             if re.match(r"^\d+\.\d+$", cycle):
                 stable_versions.append(f"{cycle}.0")
-    
+
     return get_unique_minors(stable_versions) if stable_versions else None
 
 
 def discover_python_versions() -> list[str]:
     """Discover available Python versions, falling back through multiple methods."""
     print("[PYTHON] Discovering available Python versions...")
-    
+
     for method_name, method_func in [
         ("uv", discover_from_uv),
         ("pyenv", discover_from_pyenv),
@@ -158,7 +158,7 @@ def discover_python_versions() -> list[str]:
                 return versions
         except Exception as e:
             print(f"[PYTHON] {method_name} failed: {e}")
-    
+
     # Fallback to reasonable defaults
     fallback = ["3.12", "3.13", "3.14"]
     print(f"[PYTHON] Using fallback versions: {fallback}")
@@ -256,7 +256,7 @@ def setup_cruft_tracking():
     try:
         # Load and parse .cruft.json safely
         data = json.loads(cruft_path.read_text(encoding="utf-8"))
-        
+
         # If already set, leave it alone (idempotent)
         if data.get("commit"):
             print(f"[CRUFT] Commit already set: {data['commit'][:8]}")

@@ -30,7 +30,7 @@ jobs:
   render:
     needs: compute
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -68,11 +68,11 @@ jobs:
     needs: render
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4

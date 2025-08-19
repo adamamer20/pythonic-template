@@ -86,14 +86,14 @@ jobs:
         run: |
           # Install uv in the generated project
           uv sync --all-extras
-          
+
           # Run linting
           uv run ruff check .
           uv run ruff format --check .
-          
+
           # Run tests
           uv run pytest -v
-          
+
           # Test building the package
           uv build
 
@@ -126,12 +126,12 @@ jobs:
           cd /tmp
           uv run cookiecutter ${{ github.workspace }} --no-input
           cd my-amazing-library
-          
+
           # Verify git was initialized
           test -d .git
-          
+
           # Verify initial commit exists
           git log --oneline | head -1
-          
+
           # Verify pre-commit is configured
           test -f .pre-commit-config.yaml

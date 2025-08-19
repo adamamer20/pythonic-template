@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial project structure
 
 ## [{{ cookiecutter.initial_version }}] - __RELEASE_DATE__
 
 ### Added
+
 - Initial release

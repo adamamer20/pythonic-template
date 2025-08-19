@@ -1,7 +1,7 @@
 ---
 title: "{{ cookiecutter.project_name }}: A Comprehensive Analysis"
 subtitle: "{{ cookiecutter.project_short_description }}"
-author: 
+author:
   - name: "{{ cookiecutter.author_name }}"
     email: "{{ cookiecutter.author_email }}"
     affiliation: "Institution"
@@ -85,10 +85,10 @@ import marimo as mo
 def analyze_data(data):
     """
     Analyze the collected data using our methodology.
-    
+
     Args:
         data: Input data for analysis
-        
+
     Returns:
         Analysis results
     """

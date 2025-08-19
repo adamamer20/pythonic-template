@@ -1,6 +1,6 @@
 # Template Synchronization
 
-This project was generated from the [pythonic-template](https://github.com/{{ cookiecutter.github_username }}/pythonic-template) cookiecutter template. This guide explains how to keep your project synchronized with template updates.
+This project was generated from the [pythonic-template](<https://github.com/{{> cookiecutter.github_username }}/pythonic-template) cookiecutter template. This guide explains how to keep your project synchronized with template updates.
 
 ## Using Cruft
 
@@ -105,7 +105,7 @@ If you need to modify this behavior, you can:
 
 If you prefer not to use Cruft, you can manually sync changes:
 
-1. Check the [template changelog](https://github.com/{{ cookiecutter.github_username }}/pythonic-template/blob/main/CHANGELOG.md)
+1. Check the [template changelog](<https://github.com/{{> cookiecutter.github_username }}/pythonic-template/blob/main/CHANGELOG.md)
 2. Review differences between template versions
 3. Apply relevant changes to your project manually
 4. Test thoroughly
@@ -122,6 +122,6 @@ If you prefer not to use Cruft, you can manually sync changes:
 
 If you encounter issues with template synchronization:
 
-1. Check the [template documentation](https://github.com/{{ cookiecutter.github_username }}/pythonic-template)
+1. Check the [template documentation](<https://github.com/{{> cookiecutter.github_username }}/pythonic-template)
 2. Review the [Cruft documentation](https://cruft.github.io/cruft/)
 3. Open an issue in the template repository

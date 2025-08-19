@@ -14,7 +14,7 @@ def _read_pyproject_text() -> str:
     return PYPROJECT.read_text(encoding="utf-8")
 
 
-def parse_requires_python(spec: str) -> Tuple[str, str]:
+def parse_requires_python(spec: str) -> tuple[str, str]:
     """Parse a requires-python spec and return (min, max) minors.
 
     Examples:
@@ -28,7 +28,7 @@ def parse_requires_python(spec: str) -> Tuple[str, str]:
     return f"3.{lo}", f"3.{hi}"
 
 
-def compute_min_max() -> Tuple[str, str]:
+def compute_min_max() -> tuple[str, str]:
     text = _read_pyproject_text()
     m = re.search(r"requires-python\s*=\s*\"([^\"]+)\"", text)
     spec = m.group(1) if m else ">=3.10"

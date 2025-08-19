@@ -24,7 +24,7 @@
     "ai_agents": [
         "all",
         "claude_code",
-        "openai_codex", 
+        "openai_codex",
         "roo_code",
         "claude_code,openai_codex",
         "claude_code,roo_code",
