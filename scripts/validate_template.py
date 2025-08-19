@@ -10,10 +10,12 @@ Validate template invariants that are easy to break:
 
 Exit with non-zero if any violations are found.
 """
+
 from __future__ import annotations
 
 import re
 from pathlib import Path
+
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,9 +52,7 @@ def check_readme_py_min_token() -> list[str]:
         text = readme.read_text(encoding="utf-8")
         # flag bare PY_MIN not wrapped with underscores
         if re.search(r"(?<!_)\bPY_MIN\b(?!_)", text):
-            errors.append(
-                f"{readme}: use __PY_MIN__ token, not bare PY_MIN"
-            )
+            errors.append(f"{readme}: use __PY_MIN__ token, not bare PY_MIN")
     return errors
 
 

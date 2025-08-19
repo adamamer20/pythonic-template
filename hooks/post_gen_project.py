@@ -215,6 +215,7 @@ def setup_python_versions():
 
     # Discover available minors, then filter to inclusive [lo..hi]
     discovered = discover_python_versions()
+
     def _to_minor_tuple(s: str) -> tuple[int, int]:
         ma, mi = s.split(".")
         return int(ma), int(mi)
@@ -237,9 +238,7 @@ def setup_python_versions():
         "__RELEASE_DATE__": date.today().strftime("%Y-%m-%d"),
     }
 
-    classifiers = [
-        f'    "Programming Language :: Python :: {v}",' for v in filtered
-    ]
+    classifiers = [f'    "Programming Language :: Python :: {v}",' for v in filtered]
     tokens["__PY_CLASSIFIERS__"] = "\n".join(classifiers)
 
     print(f"[PYTHON] Computed tokens: {tokens}")
@@ -275,7 +274,10 @@ def setup_python_versions():
                 try:
                     parts = content.split("\n\n", 2)
                     if len(parts) >= 2:
-                        content = f"{parts[0]}\n\n{parts[1]}\n\nRequires {py_line}.\n\n" + (parts[2] if len(parts) == 3 else "")
+                        content = (
+                            f"{parts[0]}\n\n{parts[1]}\n\nRequires {py_line}.\n\n"
+                            + (parts[2] if len(parts) == 3 else "")
+                        )
                     else:
                         content = content + f"\n\nRequires {py_line}.\n"
                 except Exception:

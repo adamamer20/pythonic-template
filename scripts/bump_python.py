@@ -17,8 +17,10 @@ def main() -> None:
 
     idx = sys.argv.index("--to")
     if idx + 1 >= len(sys.argv):
-        sys.exit("Error: --to requires a value.\n"
-                 "Usage: bump_python.py --to MAJOR.MINOR (e.g. 3.12)")
+        sys.exit(
+            "Error: --to requires a value.\n"
+            "Usage: bump_python.py --to MAJOR.MINOR (e.g. 3.12)"
+        )
 
     to = sys.argv[idx + 1]
     if not re.fullmatch(r"\d+\.\d+", to):
