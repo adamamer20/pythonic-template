@@ -131,7 +131,7 @@ jobs:
           test -d .git
 
           # Verify initial commit exists
-          git log --oneline | head -1
+          git rev-parse --verify HEAD >/dev/null
 
           # Verify pre-commit is configured
           test -f .pre-commit-config.yaml
