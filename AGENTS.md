@@ -33,3 +33,11 @@
 - Never replace or hard‑code Jinja tokens (e.g., `{{cookiecutter.*}}`).
 - Prefer editing the template under `{{cookiecutter.repo_name}}/` when changing generated output.
 - Validate changes by running tests and, if needed, manually generating a sample project.
+
+### Output capture in this CLI
+- Some subprocess output is not visible in-stream. Redirect to files and inspect with `tail`.
+  - Example: `UV_CACHE_DIR=.uv-cache uv run pytest -q > .pytest_output.txt 2>&1; tail -n 120 .pytest_output.txt`
+- Avoid `$HOME` cache writes by scoping caches locally:
+  - Set `UV_CACHE_DIR=.uv-cache` for `uv`.
+  - Set `PRE_COMMIT_HOME=.pre-commit-cache` for `pre-commit`.
+  - For Cookiecutter, use a local config that sets `replay_dir: .cookiecutter_replay` and run with `COOKIECUTTER_CONFIG=cookiecutter-ci.yaml`.
