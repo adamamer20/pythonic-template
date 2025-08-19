@@ -20,7 +20,9 @@ from pathlib import Path
 _PROJ_ROOT = Path.cwd()
 _LIB_DIR = _PROJ_ROOT / "scripts" / "lib"
 if _LIB_DIR.exists():
-    sys.path.insert(0, str(_LIB_DIR.parent))  # add 'scripts' to path
+    # Ensure imports like `scripts.lib...` resolve by adding project root
+    # (adding the scripts dir itself would require a nested `scripts/scripts`)
+    sys.path.insert(0, str(_PROJ_ROOT))
 
 try:  # Resolve helper at import time to avoid function-level imports
     from scripts.lib.python_versions import parse_requires_python  # type: ignore
