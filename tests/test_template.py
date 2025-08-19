@@ -184,6 +184,7 @@ def test_pyproject_toml_validity():
         assert project["name"] == "my_amazing_library"  # Package name is normalized
         # Check that requires-python uses minimum version from template default
         import json as _json
+
         defaults = _json.loads((ROOT / "cookiecutter.json").read_text(encoding="utf-8"))
         assert project["requires-python"] == f">={defaults['python_version']}"
         assert "dependency-groups" in pyproject
@@ -366,11 +367,15 @@ def test_devcontainer_configuration():
             assert (project_path / file_path).exists(), f"Missing {file_path}"
 
         # Check devcontainer.json configuration
-        devcontainer_content = (project_path / ".devcontainer/devcontainer.json").read_text()
+        devcontainer_content = (
+            project_path / ".devcontainer/devcontainer.json"
+        ).read_text()
         assert "dockerComposeFile" in devcontainer_content
         assert "6333" in devcontainer_content  # Qdrant port
         assert "11434" in devcontainer_content  # Ollama port
-        assert "quarto.quarto" in devcontainer_content  # Quarto extension for paper projects
+        assert (
+            "quarto.quarto" in devcontainer_content
+        )  # Quarto extension for paper projects
 
         # Check multi-stage Dockerfile
         dockerfile_content = (project_path / ".devcontainer/Dockerfile").read_text()
@@ -398,8 +403,16 @@ def test_makefile_commands():
 
         # Check core commands exist
         core_commands = [
-            "help", "setup", "test", "lint", "format", "clean",
-            "ai-setup", "quick-test", "quality", "check"
+            "help",
+            "setup",
+            "test",
+            "lint",
+            "format",
+            "clean",
+            "ai-setup",
+            "quick-test",
+            "quality",
+            "check",
         ]
 
         for cmd in core_commands:
@@ -460,6 +473,7 @@ def test_cruft_configuration():
         assert cruft_config.exists()
 
         import json
+
         with open(cruft_config) as f:
             cruft_data = json.load(f)
 
@@ -469,14 +483,20 @@ def test_cruft_configuration():
 
         # Check commit field is set to a valid 40-character SHA hash (not null)
         commit = cruft_data.get("commit")
-        assert commit is not None, "Commit field should not be null after post-generation hook"
+        assert commit is not None, (
+            "Commit field should not be null after post-generation hook"
+        )
         assert isinstance(commit, str), "Commit should be a string"
-        assert len(commit) == 40, f"Commit should be 40 characters (SHA hash), got {len(commit)}: {commit}"
+        assert len(commit) == 40, (
+            f"Commit should be 40 characters (SHA hash), got {len(commit)}: {commit}"
+        )
         # Verify it's a valid hexadecimal string
         try:
             int(commit, 16)
         except ValueError:
-            assert False, f"Commit should be a valid hexadecimal SHA hash, got: {commit}"
+            assert False, (
+                f"Commit should be a valid hexadecimal SHA hash, got: {commit}"
+            )
 
         # Check new fields are tracked
         context = cruft_data["context"]["cookiecutter"]
@@ -488,15 +508,27 @@ def test_cruft_configuration():
 
 def test_ai_agent_files_consistency():
     """Test that all AI agent instruction files have identical content."""
+
     def extract_content(content: str) -> str:
         """Extract content between conditions, removing emojis."""
         import re
+
         # Remove Jinja conditions
-        content = re.sub(r'{%.*?%}', '', content, flags=re.DOTALL).strip()
+        content = re.sub(r"{%.*?%}", "", content, flags=re.DOTALL).strip()
         # Remove emojis (any unicode emoji characters)
-        content = re.sub(r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002702-\U000027B0\U000024C2-\U0001F251]+', '', content)
+        content = re.sub(
+            r"[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002702-\U000027B0\U000024C2-\U0001F251]+",
+            "",
+            content,
+        )
         # Remove fire emoji and other specific emojis that might not be caught
-        content = content.replace('🔥', '').replace('🚀', '').replace('🤖', '').replace('💡', '').replace('✅', '')
+        content = (
+            content.replace("🔥", "")
+            .replace("🚀", "")
+            .replace("🤖", "")
+            .replace("💡", "")
+            .replace("✅", "")
+        )
         return content.strip()
 
     # Test different AI agent combinations
@@ -548,7 +580,8 @@ def test_ai_agent_files_consistency():
             # Check that no emojis exist in the AI agent files
             for file_path, content in file_contents.items():
                 import re
-                emoji_pattern = r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002702-\U000027B0\U000024C2-\U0001F251🔥🚀🤖💡✅]'
+
+                emoji_pattern = r"[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002702-\U000027B0\U000024C2-\U0001F251🔥🚀🤖💡✅]"
                 emojis_found = re.findall(emoji_pattern, content)
                 assert not emojis_found, f"Found emojis in {file_path}: {emojis_found}"
 
@@ -573,9 +606,18 @@ def test_conditional_ai_agent_files():
         project_path = Path(temp_dir) / "my-amazing-library"
 
         # Check that no AI agent files exist
-        assert not (project_path / "AGENTS.md").exists() or (project_path / "AGENTS.md").read_text().strip() == ""
-        assert not (project_path / "CLAUDE.md").exists() or (project_path / "CLAUDE.md").read_text().strip() == ""
-        assert not (project_path / ".roo/rules-code/rules.md").exists() or (project_path / ".roo/rules-code/rules.md").read_text().strip() == ""
+        assert (
+            not (project_path / "AGENTS.md").exists()
+            or (project_path / "AGENTS.md").read_text().strip() == ""
+        )
+        assert (
+            not (project_path / "CLAUDE.md").exists()
+            or (project_path / "CLAUDE.md").read_text().strip() == ""
+        )
+        assert (
+            not (project_path / ".roo/rules-code/rules.md").exists()
+            or (project_path / ".roo/rules-code/rules.md").read_text().strip() == ""
+        )
 
     # Test that specific files are created for specific agents
     test_cases = [
@@ -604,14 +646,18 @@ def test_conditional_ai_agent_files():
             # Check that the correct file exists and has content
             target_file = project_path / should_exist
             assert target_file.exists(), f"{should_exist} should exist for {ai_agent}"
-            assert target_file.read_text().strip(), f"{should_exist} should have content for {ai_agent}"
+            assert target_file.read_text().strip(), (
+                f"{should_exist} should have content for {ai_agent}"
+            )
 
             # Check that other files don't exist or are empty
             for file_path in should_not_exist:
                 other_file = project_path / file_path
                 if other_file.exists():
                     content = other_file.read_text().strip()
-                    assert not content, f"{file_path} should be empty when {ai_agent} is selected, but contains: {content[:100]}..."
+                    assert not content, (
+                        f"{file_path} should be empty when {ai_agent} is selected, but contains: {content[:100]}..."
+                    )
 
 
 def test_dynamic_python_versions():
@@ -638,41 +684,73 @@ def test_dynamic_python_versions():
 
             # Test CI workflow computes matrix dynamically
             ci_content = (project_path / ".github/workflows/ci.yml").read_text()
-            assert "python-version: __PY_MATRIX__" not in ci_content, "Tokens should be replaced in CI"
-            assert "fromJson(needs.compute.outputs.py-matrix)" in ci_content, "Matrix should be dynamic from compute step"
+            assert "python-version: __PY_MATRIX__" not in ci_content, (
+                "Tokens should be replaced in CI"
+            )
+            assert "fromJson(needs.compute.outputs.py-matrix)" in ci_content, (
+                "Matrix should be dynamic from compute step"
+            )
 
             # Test Codecov condition uses max version
-            assert 'if: matrix.python-version == \'__PY_MAX__\'' not in ci_content, "MAX token should be replaced"
+            assert "if: matrix.python-version == '__PY_MAX__'" not in ci_content, (
+                "MAX token should be replaced"
+            )
 
             # Test README has resolved version
             readme_content = (project_path / "README.md").read_text()
-            assert "__PY_MIN__" not in readme_content, "MIN token should be replaced in README"
-            assert f"Python {python_version}+" in readme_content, "README should show minimum version"
+            assert "__PY_MIN__" not in readme_content, (
+                "MIN token should be replaced in README"
+            )
+            assert f"Python {python_version}+" in readme_content, (
+                "README should show minimum version"
+            )
 
             # Test pyproject.toml has resolved version
             pyproject_content = (project_path / "pyproject.toml").read_text()
-            assert "__PY_MIN__" not in pyproject_content, "MIN token should be replaced in pyproject"
-            assert f'requires-python = ">={python_version}"' in pyproject_content, "pyproject should have minimum version"
-            assert "__PY_CLASSIFIERS__" not in pyproject_content, "Classifiers token should be replaced"
+            assert "__PY_MIN__" not in pyproject_content, (
+                "MIN token should be replaced in pyproject"
+            )
+            assert f'requires-python = ">={python_version}"' in pyproject_content, (
+                "pyproject should have minimum version"
+            )
+            assert "__PY_CLASSIFIERS__" not in pyproject_content, (
+                "Classifiers token should be replaced"
+            )
 
             # Test Python classifiers are present
-            assert f'"Programming Language :: Python :: {python_version}"' in pyproject_content, "Should have classifier for min version"
+            assert (
+                f'"Programming Language :: Python :: {python_version}"'
+                in pyproject_content
+            ), "Should have classifier for min version"
 
             # Test changelog has real date
-            changelog_content = (project_path / "docs/development/changelog.md").read_text()
-            assert "__RELEASE_DATE__" not in changelog_content, "Release date token should be replaced"
+            changelog_content = (
+                project_path / "docs/development/changelog.md"
+            ).read_text()
+            assert "__RELEASE_DATE__" not in changelog_content, (
+                "Release date token should be replaced"
+            )
             import re
+
             date_pattern = r"\d{4}-\d{2}-\d{2}"
-            assert re.search(date_pattern, changelog_content), "Should have real date format"
+            assert re.search(date_pattern, changelog_content), (
+                "Should have real date format"
+            )
 
             # Ruff target-version should match min version (py + digits) and pass regex
             import tomllib as _tomllib
+
             with open(project_path / "pyproject.toml", "rb") as _f:
                 _pyproj = _tomllib.load(_f)
             expected_target = f"py{python_version.replace('.', '')}"
-            assert _pyproj["tool"]["ruff"]["target-version"] == expected_target, "Ruff target-version should match min Python"
+            assert _pyproj["tool"]["ruff"]["target-version"] == expected_target, (
+                "Ruff target-version should match min Python"
+            )
             import re as _re
-            assert _re.search(r'target-version\s*=\s*"py3\d{1,2}"', pyproject_content), "Ruff target-version format should be py3xx"
+
+            assert _re.search(
+                r'target-version\s*=\s*"py3\d{1,2}"', pyproject_content
+            ), "Ruff target-version format should be py3xx"
 
 
 def test_python_version_matrix_generation():
@@ -695,8 +773,12 @@ def test_python_version_matrix_generation():
         ci_content = (project_path / ".github/workflows/ci.yml").read_text()
 
         # Should use dynamic matrix from compute step
-        assert "uses: ./.github/actions/compute-python" in ci_content, "Should compute Python versions via action"
-        assert "fromJson(needs.compute.outputs.py-matrix)" in ci_content, "Should use dynamic matrix expression"
+        assert "uses: ./.github/actions/compute-python" in ci_content, (
+            "Should compute Python versions via action"
+        )
+        assert "fromJson(needs.compute.outputs.py-matrix)" in ci_content, (
+            "Should use dynamic matrix expression"
+        )
 
 
 def test_no_leftover_tokens():
@@ -707,7 +789,7 @@ def test_no_leftover_tokens():
         "__PY_MAX__",
         "__PY_SHORT__",
         "__PY_CLASSIFIERS__",
-        "__RELEASE_DATE__"
+        "__RELEASE_DATE__",
     ]
 
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -740,7 +822,9 @@ def test_no_leftover_tokens():
             if full_path.exists():
                 content = full_path.read_text()
                 for token in tokens_to_check:
-                    assert token not in content, f"Found unreplaced token {token} in {file_path}"
+                    assert token not in content, (
+                        f"Found unreplaced token {token} in {file_path}"
+                    )
 
 
 def test_no_typeguard_references():
@@ -766,12 +850,13 @@ def test_no_typeguard_references():
         assert "typeguard" not in pyproject_content, "Should not reference typeguard"
 
         # Check contributing docs
-        contributing_content = (project_path / "docs/development/contributing.md").read_text()
+        contributing_content = (
+            project_path / "docs/development/contributing.md"
+        ).read_text()
         assert "beartype" in contributing_content, "Should mention beartype in docs"
-        assert "typeguard" not in contributing_content, "Should not mention typeguard in docs"
-
-
-
+        assert "typeguard" not in contributing_content, (
+            "Should not mention typeguard in docs"
+        )
 
 
 def test_makefile_targets_exist():
@@ -794,12 +879,23 @@ def test_makefile_targets_exist():
 
         # Standard targets that should always exist
         required_targets = [
-            "help:", "setup:", "fmt:", "format:", "lint:", "check:",
-            "test:", "docs:", "clean:", "build:", "publish:"
+            "help:",
+            "setup:",
+            "fmt:",
+            "format:",
+            "lint:",
+            "check:",
+            "test:",
+            "docs:",
+            "clean:",
+            "build:",
+            "publish:",
         ]
 
         for target in required_targets:
-            assert target in makefile_content, f"Missing required Makefile target: {target}"
+            assert target in makefile_content, (
+                f"Missing required Makefile target: {target}"
+            )
 
 
 def test_github_actions_versions():
@@ -829,6 +925,3 @@ def test_github_actions_versions():
         assert "setup-uv@v6" in docs_content, "Should use setup-uv@v6 in docs"
         assert "configure-pages@v5" in docs_content, "Should use configure-pages@v5"
         assert "deploy-pages@v5" in docs_content, "Should use deploy-pages@v5"
-
-
-

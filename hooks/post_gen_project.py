@@ -5,6 +5,7 @@ Initializes git repository, sets up development environment, and dynamically
 configures Python versions across the project.
 """
 
+import hashlib
 import json
 import os
 import re
@@ -12,7 +13,6 @@ import subprocess
 import sys
 from datetime import date
 from pathlib import Path
-import hashlib
 
 
 def run_command(
@@ -71,7 +71,8 @@ def filter_min_versions(minors: list[str], required_min: str) -> list[str]:
     """Filter versions to only include those >= required minimum."""
     min_tuple = tuple(map(int, required_min.split(".")))
     filtered = [
-        version for version in minors
+        version
+        for version in minors
         if tuple(map(int, version.split("."))) >= min_tuple
     ]
     return filtered or [required_min]
@@ -79,7 +80,9 @@ def filter_min_versions(minors: list[str], required_min: str) -> list[str]:
 
 def discover_from_uv() -> list[str] | None:
     """Discover Python versions using uv."""
-    returncode, output = run_silent(["uv", "python", "list", "--releases", "--format", "json"])
+    returncode, output = run_silent(
+        ["uv", "python", "list", "--releases", "--format", "json"]
+    )
     if returncode != 0:
         return None
 
@@ -117,7 +120,10 @@ def discover_from_endoflife() -> list[str] | None:
     """Discover Python versions using endoflife.date API (stdlib only)."""
     try:
         import urllib.request  # noqa: WPS433 (stdlib import inside function for portability)
-        with urllib.request.urlopen("https://endoflife.date/api/python.json", timeout=5) as resp:
+
+        with urllib.request.urlopen(
+            "https://endoflife.date/api/python.json", timeout=5
+        ) as resp:
             output = resp.read().decode("utf-8")
         if not output.strip():
             return None
@@ -200,7 +206,9 @@ def setup_python_versions():
         "__RELEASE_DATE__": date.today().strftime("%Y-%m-%d"),
     }
 
-    classifiers = [f'    "Programming Language :: Python :: {v}",' for v in matrix_versions]
+    classifiers = [
+        f'    "Programming Language :: Python :: {v}",' for v in matrix_versions
+    ]
     tokens["__PY_CLASSIFIERS__"] = "\n".join(classifiers)
 
     print(f"[PYTHON] Computed tokens: {tokens}")
@@ -241,7 +249,9 @@ def _run_command(cmd: list[str], cwd: str | None = None) -> str | None:
         result = subprocess.run(
             cmd, cwd=cwd, check=False, capture_output=True, text=True
         )
-        return result.stdout.strip() if result.returncode == 0 and result.stdout else None
+        return (
+            result.stdout.strip() if result.returncode == 0 and result.stdout else None
+        )
     except Exception:
         return None
 
@@ -274,13 +284,22 @@ def setup_cruft_tracking():
                 break
 
         # Method 1: If template is a local path, try to get its commit
-        if not known_commit and template and Path(template).exists() and (Path(template) / ".git").exists():
+        if (
+            not known_commit
+            and template
+            and Path(template).exists()
+            and (Path(template) / ".git").exists()
+        ):
             known_commit = _run_command(["git", "rev-parse", "HEAD"], cwd=template)
             if known_commit:
                 print(f"[CRUFT] Found commit from template path: {template}")
 
         # Method 2: If template is a remote URL and no env override, try git ls-remote
-        if not known_commit and isinstance(template, str) and template.startswith(("http://", "https://", "git@", "git://")):
+        if (
+            not known_commit
+            and isinstance(template, str)
+            and template.startswith(("http://", "https://", "git@", "git://"))
+        ):
             remote_output = _run_command(["git", "ls-remote", template, "HEAD"])
             if remote_output:
                 known_commit = remote_output.split()[0]
@@ -301,12 +320,18 @@ def setup_cruft_tracking():
                     sha = _run_command(["git", "rev-parse", "HEAD"], cwd=str(probe))
                     if sha:
                         known_commit = sha
-                        print(f"[CRUFT] Found local template at {probe} (not persisted in .cruft.json)")
+                        print(
+                            f"[CRUFT] Found local template at {probe} (not persisted in .cruft.json)"
+                        )
                         break
 
         if not known_commit:
             # Offline-friendly deterministic fallback: hash the template URL/path
-            basis = template if isinstance(template, str) and template else "pythonic-template"
+            basis = (
+                template
+                if isinstance(template, str) and template
+                else "pythonic-template"
+            )
             known_commit = hashlib.sha1(basis.encode("utf-8")).hexdigest()
             print("[CRUFT] Could not resolve template commit; using synthetic SHA")
 
@@ -334,6 +359,7 @@ def main():
     for path in project_dir.rglob("__remove__*"):
         if path.is_dir():
             import shutil
+
             shutil.rmtree(path)
         else:
             path.unlink()

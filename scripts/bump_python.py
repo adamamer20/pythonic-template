@@ -3,10 +3,9 @@ from __future__ import annotations
 import pathlib
 import re
 import sys
-
 import tomllib
-import tomli_w
 
+import tomli_w
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PYPROJECT = ROOT / "pyproject.toml"
@@ -31,4 +30,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

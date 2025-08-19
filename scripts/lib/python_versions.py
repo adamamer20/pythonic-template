@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 import pathlib
 import re
-from typing import Tuple
-
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 PYPROJECT = ROOT / "pyproject.toml"
@@ -38,4 +36,3 @@ def compute_min_max() -> tuple[str, str]:
 def json_blob() -> str:
     lo, hi = compute_min_max()
     return json.dumps({"min": lo, "max": hi})
-
