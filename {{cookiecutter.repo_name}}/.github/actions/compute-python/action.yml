@@ -6,9 +6,9 @@ runs:
       shell: bash
       run: |
         python - <<'PY' > compute.json
-from scripts.lib.python_versions import json_blob
-print(json_blob())
-PY
+        from scripts.lib.python_versions import json_blob
+        print(json_blob())
+        PY
         echo "min=$(jq -r .min compute.json)" >> "$GITHUB_OUTPUT"
         echo "max=$(jq -r .max compute.json)" >> "$GITHUB_OUTPUT"
         if [ "$(jq -r .min compute.json)" = "$(jq -r .max compute.json)" ]; then
@@ -23,4 +23,3 @@ outputs:
     value: ${{ steps.compute.outputs.max }}
   matrix:
     value: ${{ steps.compute.outputs.matrix }}
-
