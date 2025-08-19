@@ -6,17 +6,20 @@ Thank you for considering contributing to {{ cookiecutter.project_name }}!
 
 1. Fork the repository
 2. Clone your fork:
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/{{ cookiecutter.repo_name }}.git
    cd {{ cookiecutter.repo_name }}
    ```
 
 3. Install development dependencies:
+
    ```bash
    uv pip install -e .[dev]
    ```
 
 4. Install pre-commit hooks:
+
    ```bash
    pre-commit install
    ```
@@ -59,4 +62,8 @@ mkdocs build
 
 ## Environment Variables
 
-- `DEV_TYPECHECK=1`: Enable runtime type checking with typeguard
+- `DEV_TYPECHECK=1`: Enable runtime type checking with beartype
+
+## Python Version
+
+This project requires Python __PY_MIN__+ and follows modern Python practices.

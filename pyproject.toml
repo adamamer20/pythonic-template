@@ -10,7 +10,7 @@ authors = [
 maintainers = [
     { name = "Adam Amer", email = "adam@example.com" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 keywords = [
     "cookiecutter",
     "template",
@@ -28,9 +28,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Code Generators",
@@ -59,6 +56,7 @@ dev = [
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "ruff>=0.11.11",
+    "tomli-w>=1.0.0",
 ]
 
 [tool.uv]
@@ -72,7 +70,7 @@ build-backend = "hatchling.build"
 packages = ["src"]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py312"
 line-length = 88
 fix = true
 
@@ -102,6 +100,10 @@ ignore = [
     "FBT001", # boolean-type-hint-positional-argument
     "FBT002", # boolean-default-value-positional-argument
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"hooks/post_gen_project.py" = ["PLC0415"]
+"tests/test_template.py" = ["PLC0415", "PLR2004"]
 
 [tool.ruff.format]
 quote-style = "double"

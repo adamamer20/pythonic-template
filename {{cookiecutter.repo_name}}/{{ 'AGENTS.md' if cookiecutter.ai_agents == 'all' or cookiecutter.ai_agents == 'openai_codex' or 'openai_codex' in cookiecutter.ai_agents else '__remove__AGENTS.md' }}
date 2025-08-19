@@ -11,7 +11,7 @@ The Makefile is the CENTRAL hub for all development operations. Every command sh
 ### Core Development Setup
 
 1. **Project Generation**: Install `cookiecutter` via `uv tool install cookiecutter`
-2. **Generate project**: 
+2. **Generate project**:
    ```bash
    cookiecutter https://github.com/adamamer20/pythonic-template
    ```
@@ -24,11 +24,11 @@ The Makefile is the CENTRAL hub for all development operations. Every command sh
 ### Essential Make Commands (Use These Daily!)
 
 - `make help` - Show all available commands (ALWAYS start here)
-- `make setup` - Complete development environment setup 
+- `make setup` - Complete development environment setup
 - `make dev` - Start development environment
 - `make test` - Run tests with type checking
 - `make quick-test` - Fast tests without coverage
-- `make lint` - Run linting and fix issues  
+- `make lint` - Run linting and fix issues
 - `make format` - Format code
 - `make check` - Run all quality checks + tests
 - `make clean` - Clean build artifacts
@@ -42,7 +42,7 @@ This template supports multiple AI development assistants:
 - **Roo Code**: Advanced AI with `.roo/rules-code/rules.md`
 
 The devcontainer automatically installs your selected AI agents and sets up:
-- Qdrant vector database (for Roo Code)  
+- Qdrant vector database (for Roo Code)
 - Ollama local LLM runtime (for Roo Code)
 - VS Code extensions for each agent
 
@@ -70,7 +70,7 @@ Keep a copy of this file in child projects so these rules apply everywhere.
 ### Package Management (via Make)
 
 - `make sync` - Sync dependencies with lockfile
-- `make upgrade` - Upgrade all dependencies  
+- `make upgrade` - Upgrade all dependencies
 
 ### Direct uv commands (when Make doesn't cover it)
 
@@ -121,7 +121,7 @@ Keep a copy of this file in child projects so these rules apply everywhere.
 - **Standard**: Regular Python package
 {% if cookiecutter.project_type == "paper" %}- **Paper**: Academic paper with Quarto, includes paper/ directory with paper.qmd{% endif %}
 
-### AI Agent Support  
+### AI Agent Support
 - Choose from Claude Code CLI, OpenAI Codex, Roo Code, or combinations
 - Automatic devcontainer configuration for selected agents
 - Qdrant + Ollama setup for advanced AI workflows

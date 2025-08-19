@@ -8,26 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Nothing yet
 
 ### Changed
+
 - Nothing yet
 
 ### Deprecated
+
 - Nothing yet
 
 ### Removed
+
 - Nothing yet
 
 ### Fixed
+
 - Nothing yet
 
 ### Security
+
 - Nothing yet
 
 ## [0.1.0] - 2025-05-25
 
 ### Added
+
 - Initial release of pythonic-template
 - Modern Python project template with Cookiecutter
 - Support for Python 3.12+ with full type hints
@@ -49,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security-focused configuration with modern best practices
 
 ### Features
+
 - 🚀 **Modern Python Stack**: uv, Ruff, pytest, MkDocs Material, typeguard
 - 🛡️ **Quality Assurance**: Pre-commit, GitHub Actions, Dependabot, type checking
 - 📚 **Documentation**: Material for MkDocs with automatic API docs
