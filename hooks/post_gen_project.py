@@ -238,6 +238,20 @@ def setup_python_versions():
         for token, replacement in tokens.items():
             content = content.replace(token, replacement)
 
+        # Ensure README prominently shows minimum Python version
+        if file_path == "README.md":
+            py_line = f"Python {tokens['__PY_MIN__']}+"
+            if py_line not in content:
+                # Insert after the short description paragraph if present
+                try:
+                    parts = content.split("\n\n", 2)
+                    if len(parts) >= 2:
+                        content = f"{parts[0]}\n\n{parts[1]}\n\nRequires {py_line}.\n\n" + (parts[2] if len(parts) == 3 else "")
+                    else:
+                        content = content + f"\n\nRequires {py_line}.\n"
+                except Exception:
+                    content = content + f"\n\nRequires {py_line}.\n"
+
         if content != original_content:
             full_path.write_text(content, encoding="utf-8")
             print(f"[PYTHON] Updated {file_path} with Python version tokens")
@@ -403,6 +417,18 @@ def main():
         print("[OK] Pre-commit hooks installed")
     except subprocess.CalledProcessError:
         print("[WARN] Dependency installation failed")
+
+    # Best-effort: format code and sort imports so lint passes out-of-the-box
+    try:
+        if uv_available:
+            run_command("uv run ruff format")
+            run_command("uv run ruff check --fix .")
+        else:
+            run_command("ruff format")
+            run_command("ruff check --fix .")
+        print("[OK] Code formatted and imports sorted with Ruff")
+    except subprocess.CalledProcessError:
+        print("[WARN] Ruff formatting skipped (environment not ready)")
 
     # Create initial commit
     try:

@@ -14,6 +14,8 @@
 
 {{ cookiecutter.project_short_description }}
 
+Requires Python **__PY_MIN__**+.
+
 ## Features
 
 - ✨ **Modern Python**: Built with Python **__PY_MIN__**+ support
