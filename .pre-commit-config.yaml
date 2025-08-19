@@ -56,3 +56,12 @@ repos:
       - id: pydoclint
         args: [--style=numpy, --skip-checking-raises=True, --allow-init-docstring=True]
         exclude: '^\{\{cookiecutter\.repo_name\}\}/'
+
+  # Local validations specific to this template repository
+  - repo: local
+    hooks:
+      - id: validate-template
+        name: Validate template tokens and workflows
+        entry: python scripts/validate_template.py
+        language: system
+        pass_filenames: false

@@ -7,7 +7,7 @@ on:
     branches: [ main, develop ]
 
 concurrency:
-  group: "{{ '${{ github.workflow }}-${{ github.ref }}' }}"
+  group: "{% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}"
   cancel-in-progress: true
 
 env:
@@ -17,9 +17,9 @@ jobs:
   compute:
     runs-on: ubuntu-latest
     outputs:
-      py-min: {{ '${{ steps.out.outputs.min }}' }}
-      py-max: {{ '${{ steps.out.outputs.max }}' }}
-      py-matrix: {{ '${{ steps.out.outputs.matrix }}' }}
+      py-min: "{% raw %}${{ steps.out.outputs.min }}{% endraw %}"
+      py-max: "{% raw %}${{ steps.out.outputs.max }}{% endraw %}"
+      py-matrix: "{% raw %}${{ steps.out.outputs.matrix }}{% endraw %}"
     steps:
       - uses: actions/checkout@v4
       - id: out
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: {{ '${{ fromJson(needs.compute.outputs.py-matrix) }}' }}
+        python-version: "{% raw %}${{ fromJson(needs.compute.outputs.py-matrix) }}{% endraw %}"
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          python-version: "{{ '${{ matrix.python-version }}' }}"
+          python-version: "{% raw %}${{ matrix.python-version }}{% endraw %}"
 
       - name: Install dependencies
         run: uv sync --all-extras
@@ -57,7 +57,7 @@ jobs:
         run: DEV_TYPECHECK=1 uv run pytest -v
 
       - name: Upload coverage to Codecov
-        if: {{ '${{ matrix.python-version == needs.compute.outputs.py-max }}' }}
+        if: "{% raw %}${{ matrix.python-version == needs.compute.outputs.py-max }}{% endraw %}"
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
@@ -78,5 +78,5 @@ jobs:
       - name: Enable auto-merge for Dependabot PRs
         run: gh pr merge --auto --merge "$PR_URL"
         env:
-          PR_URL: "{{ '${{ github.event.pull_request.html_url }}' }}"
-          GITHUB_TOKEN: "{{ '${{ secrets.GITHUB_TOKEN }}' }}"
+          PR_URL: "{% raw %}${{ github.event.pull_request.html_url }}{% endraw %}"
+          GITHUB_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"

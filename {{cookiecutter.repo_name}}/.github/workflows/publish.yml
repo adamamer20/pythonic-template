@@ -11,7 +11,7 @@ jobs:
   compute:
     runs-on: ubuntu-latest
     outputs:
-      py-max: {{ '${{ steps.out.outputs.max }}' }}
+      py-max: "{% raw %}${{ steps.out.outputs.max }}{% endraw %}"
     steps:
       - uses: actions/checkout@v4
       - id: out
@@ -33,7 +33,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          python-version: {{ '${{ needs.compute.outputs.py-max }}' }}
+          python-version: "{% raw %}${{ needs.compute.outputs.py-max }}{% endraw %}"
 
       - name: Build package
         run: uv build
@@ -41,4 +41,4 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: "{% raw %}${{ secrets.PYPI_API_TOKEN }}{% endraw %}"
