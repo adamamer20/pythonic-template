@@ -34,14 +34,25 @@ def check_workflows_raw_wrapping() -> list[str]:
     for yml in _workflow_files():
         in_raw = False
         for lineno, line in enumerate(yml.read_text(encoding="utf-8").splitlines(), 1):
-            if "{% raw %}" in line:
-                in_raw = True
-            if "{% endraw %}" in line:
-                in_raw = False
-            if "${{" in line and not in_raw:
-                errors.append(
-                    f"{yml}: line {lineno}: `${{` must be inside Jinja raw block"
+            # Check for GitHub expression occurrences on this line
+            if "${{" in line:
+                is_inline_wrapped = (
+                    "{% raw %}" in line
+                    and "{% endraw %}" in line
+                    and line.find("{% raw %}")
+                    < line.find("${{")
+                    < line.find("{% endraw %}")
                 )
+                if not in_raw and not is_inline_wrapped:
+                    errors.append(
+                        f"{yml}: line {lineno}: `${{` must be inside Jinja raw block"
+                    )
+
+            # Update block state after handling inline case
+            if "{% raw %}" in line and "{% endraw %}" not in line:
+                in_raw = True
+            if "{% endraw %}" in line and "{% raw %}" not in line:
+                in_raw = False
     return errors
 
 

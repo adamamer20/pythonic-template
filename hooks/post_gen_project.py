@@ -205,10 +205,7 @@ def setup_python_versions():
     raw_spec = "{{ cookiecutter.python_version }}".strip()
     print(f"[PYTHON] Python version input from template: {raw_spec}")
 
-    if any(ch in raw_spec for ch in ">=<,"):
-        spec = raw_spec
-    else:
-        spec = f">={raw_spec}"
+    spec = raw_spec if any(ch in raw_spec for ch in ">=<,") else f">={raw_spec}"
 
     lo, hi = parse_requires_python(spec)
     print(f"[PYTHON] Parsed requires-python -> min: {lo}, max: {hi}")
@@ -272,11 +269,18 @@ def setup_python_versions():
             if py_line not in content:
                 # Insert after the short description paragraph if present
                 try:
+                    MIN_PARAGRAPHS_FOR_INSERT = 2
+                    EXPECTED_PARTS_WITH_TAIL = 3
+
                     parts = content.split("\n\n", 2)
-                    if len(parts) >= 2:
+                    if len(parts) >= MIN_PARAGRAPHS_FOR_INSERT:
                         content = (
                             f"{parts[0]}\n\n{parts[1]}\n\nRequires {py_line}.\n\n"
-                            + (parts[2] if len(parts) == 3 else "")
+                            + (
+                                parts[2]
+                                if len(parts) == EXPECTED_PARTS_WITH_TAIL
+                                else ""
+                            )
                         )
                     else:
                         content = content + f"\n\nRequires {py_line}.\n"

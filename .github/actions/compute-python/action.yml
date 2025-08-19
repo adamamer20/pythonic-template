@@ -1,4 +1,5 @@
 name: Compute Python min/max from pyproject
+description: Compute min/max Python versions and a test matrix from pyproject metadata
 runs:
   using: "composite"
   steps:
