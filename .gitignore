@@ -11,3 +11,4 @@ wheels/
 
 site
 repository_*
+.cookiecutter_replay/
