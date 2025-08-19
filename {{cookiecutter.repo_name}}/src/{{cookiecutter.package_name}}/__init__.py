@@ -2,6 +2,7 @@
 {{ cookiecutter.project_name }}: {{ cookiecutter.project_short_description }}
 """
 
+import os
 from importlib import metadata as _metadata
 
 __all__ = ["__version__"]
@@ -13,9 +14,8 @@ except _metadata.PackageNotFoundError:
     __version__ = "0.0.0+dev"
 
 # -- Development-only runtime type-checking ------------------------------
-import os
-
 if os.getenv("DEV_TYPECHECK", "0") == "1":
     from beartype.claw import beartype_this_package
+
     beartype_this_package()  # Enforce type hints across entire package
 # ------------------------------------------------------------------------
