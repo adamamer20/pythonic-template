@@ -20,10 +20,16 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = ROOT / "{{cookiecutter.repo_name}}"
 
 
+def _workflow_files() -> list[Path]:
+    """Return sorted list of workflow files with .yml and .yaml extensions."""
+    workflows_dir = TEMPLATE_ROOT / ".github" / "workflows"
+    files = set(workflows_dir.glob("*.yml")) | set(workflows_dir.glob("*.yaml"))
+    return sorted(files, key=lambda p: p.name)
+
+
 def check_workflows_raw_wrapping() -> list[str]:
     errors: list[str] = []
-    workflows_dir = TEMPLATE_ROOT / ".github" / "workflows"
-    for yml in sorted(workflows_dir.glob("*.yml")):
+    for yml in _workflow_files():
         in_raw = False
         for lineno, line in enumerate(yml.read_text(encoding="utf-8").splitlines(), 1):
             if "{% raw %}" in line:
@@ -52,8 +58,7 @@ def check_readme_py_min_token() -> list[str]:
 
 def check_template_workflows_are_valid_yaml() -> list[str]:
     errors: list[str] = []
-    workflows_dir = TEMPLATE_ROOT / ".github" / "workflows"
-    for yml in sorted(workflows_dir.glob("*.yml")):
+    for yml in _workflow_files():
         try:
             yaml.safe_load(yml.read_text(encoding="utf-8"))
         except Exception as e:
