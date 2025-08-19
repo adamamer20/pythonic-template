@@ -65,3 +65,10 @@ repos:
         entry: python scripts/validate_template.py
         language: system
         pass_filenames: false
+
+  # Lint root repo GitHub Actions workflows
+  - repo: https://github.com/carlosperate/actionlint-py
+    rev: v1.7.3.1
+    hooks:
+      - id: actionlint-py
+        files: '^\.github/workflows/.*\.ya?ml$'

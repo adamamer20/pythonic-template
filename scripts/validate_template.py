@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = ROOT / "{{cookiecutter.repo_name}}"
@@ -49,10 +50,22 @@ def check_readme_py_min_token() -> list[str]:
     return errors
 
 
+def check_template_workflows_are_valid_yaml() -> list[str]:
+    errors: list[str] = []
+    workflows_dir = TEMPLATE_ROOT / ".github" / "workflows"
+    for yml in sorted(workflows_dir.glob("*.yml")):
+        try:
+            yaml.safe_load(yml.read_text(encoding="utf-8"))
+        except Exception as e:
+            errors.append(f"{yml}: invalid YAML: {e}")
+    return errors
+
+
 def main() -> int:
     violations = []
     violations += check_workflows_raw_wrapping()
     violations += check_readme_py_min_token()
+    violations += check_template_workflows_are_valid_yaml()
 
     if violations:
         print("Template validation failed:")
@@ -64,4 +77,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
