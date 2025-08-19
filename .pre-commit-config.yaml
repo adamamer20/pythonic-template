@@ -2,46 +2,51 @@ ci:
     autoupdate_schedule: 'monthly'
 
 repos:
-- repo: https://github.com/astral-sh/ruff-pre-commit  # Ruff version.
-  rev: "v0.12.9"
-  hooks:
-    # Run the linter.
-    - id: ruff
-      types_or: [ python, pyi, jupyter ]
-      args: [ --fix ]
-    # Run the formatter.
-    - id: ruff-format
-      types_or: [ python, pyi, jupyter ]
-    - repo: https://github.com/asottile/pyupgrade
-      rev: v3.19.1
-      hooks:
-        - id: pyupgrade
-          args: [--py312-plus]
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/astral-sh/ruff-pre-commit  # Ruff version.
+    rev: "v0.12.9"
+    hooks:
+      # Run the linter.
+      - id: ruff
+        types_or: [ python, pyi, jupyter ]
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [ python, pyi, jupyter ]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.1
+    hooks:
+      - id: pyupgrade
+        args: [--py312-plus]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: check-toml
-    -   id: check-yaml
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.4.1
-  hooks:
-    - id: codespell
-      args: [
-        "--ignore-words",
-        ".codespellignore",
-      ]
-- repo: https://github.com/DavidAnson/markdownlint-cli2  # For formatting markdown for documentation
-  rev: v0.17.2
-  hooks:
-    - id: markdownlint-cli2
-      args: [
-        "--fix",
-        "--config",
-        ".markdownlint.json",
-      ]
-- repo: https://github.com/jsh9/pydoclint  # For checking docstrings
-  rev: 0.6.6
-  hooks:
-    - id: pydoclint
-      args: [--style=numpy, --skip-checking-raises=True, --allow-init-docstring=True]
+      - id: trailing-whitespace
+      - id: check-toml
+      - id: check-yaml
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        args: [
+          "--ignore-words",
+          ".codespellignore",
+        ]
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2  # For formatting markdown for documentation
+    rev: v0.17.2
+    hooks:
+      - id: markdownlint-cli2
+        args: [
+          "--fix",
+          "--config",
+          ".markdownlint.json",
+        ]
+
+  - repo: https://github.com/jsh9/pydoclint  # For checking docstrings
+    rev: 0.6.6
+    hooks:
+      - id: pydoclint
+        args: [--style=numpy, --skip-checking-raises=True, --allow-init-docstring=True]
