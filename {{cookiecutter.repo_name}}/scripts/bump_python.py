@@ -14,8 +14,20 @@ PYPROJECT = ROOT / "pyproject.toml"
 
 def main() -> None:
     if "--to" not in sys.argv:
-        sys.exit("Usage: bump_python.py --to 3.12")
-    to = sys.argv[sys.argv.index("--to") + 1]
+        sys.exit("Usage: bump_python.py --to MAJOR.MINOR (e.g. 3.12)")
+
+    idx = sys.argv.index("--to")
+    if idx + 1 >= len(sys.argv):
+        sys.exit(
+            "Error: --to requires a value.\n"
+            "Usage: bump_python.py --to MAJOR.MINOR (e.g. 3.12)"
+        )
+
+    to = sys.argv[idx + 1]
+    if not re.fullmatch(r"\d+\.\d+", to):
+        sys.exit(
+            f"Error: invalid Python version '{to}'. Expected MAJOR.MINOR like 3.12"
+        )
 
     text = PYPROJECT.read_text(encoding="utf-8")
     doc = tomllib.loads(text)
@@ -31,4 +43,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
