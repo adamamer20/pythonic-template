@@ -101,6 +101,10 @@ ignore = [
     "FBT002", # boolean-default-value-positional-argument
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"hooks/post_gen_project.py" = ["PLC0415"]
+"tests/test_template.py" = ["PLC0415", "PLR2004"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"

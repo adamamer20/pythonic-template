@@ -494,9 +494,7 @@ def test_cruft_configuration():
         try:
             int(commit, 16)
         except ValueError:
-            assert False, (
-                f"Commit should be a valid hexadecimal SHA hash, got: {commit}"
-            )
+            pytest.fail(f"Commit should be a valid hexadecimal SHA hash, got: {commit}")
 
         # Check new fields are tracked
         context = cruft_data["context"]["cookiecutter"]

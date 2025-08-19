@@ -9,10 +9,29 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import urllib.request
 from datetime import date
 from pathlib import Path
+
+# Make generated project's scripts importable (for parse_requires_python)
+_PROJ_ROOT = Path.cwd()
+_LIB_DIR = _PROJ_ROOT / "scripts" / "lib"
+if _LIB_DIR.exists():
+    sys.path.insert(0, str(_LIB_DIR.parent))  # add 'scripts' to path
+
+try:  # Resolve helper at import time to avoid function-level imports
+    from scripts.lib.python_versions import parse_requires_python  # type: ignore
+except Exception:
+    # Fallback: minimal local implementation (should rarely be needed)
+    def parse_requires_python(spec: str):  # type: ignore
+        m1 = re.search(r">=?\s*3\.(\d+)", spec)
+        m2 = re.search(r"<\s*3\.(\d+)", spec)
+        lo = int(m1.group(1)) if m1 else 12
+        hi = (int(m2.group(1)) - 1) if m2 else lo
+        return f"3.{lo}", f"3.{hi}"
 
 
 def run_command(
@@ -119,8 +138,6 @@ def discover_from_pyenv() -> list[str] | None:
 def discover_from_endoflife() -> list[str] | None:
     """Discover Python versions using endoflife.date API (stdlib only)."""
     try:
-        import urllib.request  # noqa: WPS433 (stdlib import inside function for portability)
-
         with urllib.request.urlopen(
             "https://endoflife.date/api/python.json", timeout=5
         ) as resp:
@@ -173,22 +190,7 @@ def discover_python_versions() -> list[str]:
 
 def setup_python_versions():
     """Set up Python version tokens using shared logic."""
-    # Ensure we can import from generated project's scripts/lib
-    proj_root = Path.cwd()
-    lib_dir = proj_root / "scripts" / "lib"
-    if lib_dir.exists():
-        sys.path.insert(0, str(lib_dir.parent))  # add 'scripts' to path
-
-    try:
-        from scripts.lib.python_versions import parse_requires_python  # type: ignore
-    except Exception:
-        # Fallback: minimal local implementation (should rarely be needed)
-        def parse_requires_python(spec: str):  # type: ignore
-            m1 = re.search(r">=?\s*3\.(\d+)", spec)
-            m2 = re.search(r"<\s*3\.(\d+)", spec)
-            lo = int(m1.group(1)) if m1 else 12
-            hi = (int(m2.group(1)) - 1) if m2 else lo
-            return f"3.{lo}", f"3.{hi}"
+    # parse_requires_python is resolved at module import time
 
     # Get min from template context
     min_version = "{{ cookiecutter.python_version }}".strip()
@@ -358,8 +360,6 @@ def main():
     # Clean up any placeholder files or directories left from template rendering
     for path in project_dir.rglob("__remove__*"):
         if path.is_dir():
-            import shutil
-
             shutil.rmtree(path)
         else:
             path.unlink()
