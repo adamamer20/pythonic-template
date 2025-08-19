@@ -18,7 +18,17 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-max: {{ '${{ steps.out.outputs.max }}' }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   render:
+    needs: compute
     runs-on: ubuntu-latest
     
     steps:
@@ -30,15 +40,11 @@ jobs:
         with:
           version: pre-release
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '__PY_MAX__'
-
-      - name: Install uv
+      - name: Install uv & select Python (max)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          python-version: {{ '${{ needs.compute.outputs.py-max }}' }}
 
       - name: Install dependencies
         run: |

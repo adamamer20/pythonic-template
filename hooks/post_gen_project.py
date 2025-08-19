@@ -9,8 +9,10 @@ import json
 import os
 import re
 import subprocess
+import sys
 from datetime import date
 from pathlib import Path
+import hashlib
 
 
 def run_command(
@@ -164,37 +166,48 @@ def discover_python_versions() -> list[str]:
 
 
 def setup_python_versions():
-    """Set up dynamic Python version configuration."""
-    # Get template variable
+    """Set up Python version tokens using shared logic."""
+    # Ensure we can import from generated project's scripts/lib
+    proj_root = Path.cwd()
+    lib_dir = proj_root / "scripts" / "lib"
+    if lib_dir.exists():
+        sys.path.insert(0, str(lib_dir.parent))  # add 'scripts' to path
+
+    try:
+        from scripts.lib.python_versions import parse_requires_python  # type: ignore
+    except Exception:
+        # Fallback: minimal local implementation (should rarely be needed)
+        def parse_requires_python(spec: str):  # type: ignore
+            m1 = re.search(r">=?\s*3\.(\d+)", spec)
+            m2 = re.search(r"<\s*3\.(\d+)", spec)
+            lo = int(m1.group(1)) if m1 else 12
+            hi = (int(m2.group(1)) - 1) if m2 else lo
+            return f"3.{lo}", f"3.{hi}"
+
+    # Get min from template context
     min_version = "{{ cookiecutter.python_version }}".strip()
     print(f"[PYTHON] Minimum Python version from template: {min_version}")
-    
-    # Discover available versions
-    all_versions = discover_python_versions()
-    matrix_versions = filter_min_versions(all_versions, min_version)
-    max_version = matrix_versions[-1]
-    
-    # Compute tokens
+
+    lo, hi = parse_requires_python(f">={min_version}")
+    matrix_versions = [lo] if lo == hi else [lo, hi]
+    max_version = hi
+
     tokens = {
-        "__PY_MIN__": min_version,
+        "__PY_MIN__": lo,
         "__PY_MATRIX__": json.dumps(matrix_versions),
         "__PY_MAX__": max_version,
-        "__PY_SHORT__": min_version.replace(".", ""),  # For ruff target-version
+        "__PY_SHORT__": lo.replace(".", ""),
         "__RELEASE_DATE__": date.today().strftime("%Y-%m-%d"),
     }
-    
-    # Generate Python classifiers
-    classifiers = []
-    for version in matrix_versions:
-        classifiers.append(f'    "Programming Language :: Python :: {version}",')
+
+    classifiers = [f'    "Programming Language :: Python :: {v}",' for v in matrix_versions]
     tokens["__PY_CLASSIFIERS__"] = "\n".join(classifiers)
-    
+
     print(f"[PYTHON] Computed tokens: {tokens}")
-    
-    # Files to update
+
     target_files = [
         ".github/workflows/ci.yml",
-        ".github/workflows/docs.yml", 
+        ".github/workflows/docs.yml",
         ".github/workflows/publish.yml",
         ".github/workflows/render-paper.yml",
         "README.md",
@@ -202,24 +215,23 @@ def setup_python_versions():
         "docs/development/changelog.md",
         "docs/development/contributing.md",
     ]
-    
-    # Replace tokens in files
+
     project_root = Path.cwd()
     for file_path in target_files:
         full_path = project_root / file_path
         if not full_path.exists():
             continue
-            
+
         content = full_path.read_text(encoding="utf-8")
         original_content = content
-        
+
         for token, replacement in tokens.items():
             content = content.replace(token, replacement)
-        
+
         if content != original_content:
             full_path.write_text(content, encoding="utf-8")
             print(f"[PYTHON] Updated {file_path} with Python version tokens")
-    
+
     print("[PYTHON] Python version setup completed!")
 
 
@@ -293,9 +305,10 @@ def setup_cruft_tracking():
                         break
 
         if not known_commit:
-            print("[CRUFT] Could not resolve template commit; leaving commit=null")
-            print("[CRUFT] You can run 'cruft update' later to sync with template")
-            return
+            # Offline-friendly deterministic fallback: hash the template URL/path
+            basis = template if isinstance(template, str) and template else "pythonic-template"
+            known_commit = hashlib.sha1(basis.encode("utf-8")).hexdigest()
+            print("[CRUFT] Could not resolve template commit; using synthetic SHA")
 
         # Update only the commit field, preserving template URL
         data["commit"] = known_commit

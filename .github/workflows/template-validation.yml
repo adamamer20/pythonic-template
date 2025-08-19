@@ -14,22 +14,33 @@ env:
   FORCE_COLOR: 1
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-min: ${{ steps.out.outputs.min }}
+      py-max: ${{ steps.out.outputs.max }}
+      py-matrix: ${{ steps.out.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   validate-template:
+    needs: compute
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.12']
+        python-version: ${{ fromJson(needs.compute.outputs.py-matrix) }}
         use-docker: ['y', 'n']
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install uv (manage Python)
+      - name: Install uv & select Python
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          manage-python: true
           python-version: ${{ matrix.python-version }}
 
       - name: Install template dependencies
@@ -73,16 +84,16 @@ jobs:
           docker build --target development -t test-dev .
 
   test-hooks:
+    needs: compute
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install uv (manage Python)
+      - name: Install uv & select Python (max)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          manage-python: true
-          python-version: '3.12'
+          python-version: ${{ needs.compute.outputs.py-max }}
 
       - name: Sync environment
         run: uv sync --all-extras

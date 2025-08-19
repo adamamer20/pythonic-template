@@ -8,7 +8,17 @@ env:
   FORCE_COLOR: 1
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-max: {{ '${{ steps.out.outputs.max }}' }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   publish:
+    needs: compute
     runs-on: ubuntu-latest
     environment: 
       name: pypi
@@ -19,13 +29,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '__PY_MAX__'
-
-      - name: Install uv
+      - name: Install uv & select Python (max)
         uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: {{ '${{ needs.compute.outputs.py-max }}' }}
 
       - name: Build package
         run: uv build

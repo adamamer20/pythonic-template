@@ -1,4 +1,4 @@
-.PHONY: help setup dev-install test test-cov lint format quality pre-commit docs docs-build clean build publish upgrade check ai-setup all {% if cookiecutter.project_type == "paper" %} paper-render paper-preview paper-check{% endif %}
+.PHONY: help setup dev-install test test-cov lint format quality pre-commit docs docs-build clean build publish upgrade check ai-setup all {% if cookiecutter.project_type == "paper" %} paper-render paper-preview paper-check{% endif %} bump-python
 
 .DEFAULT_GOAL := all
 
@@ -67,6 +67,12 @@ clean: ## Clean build artifacts and cache
 	@echo "🧹 Cleaning build artifacts..."
 	rm -rf build/ dist/ *.egg-info/
 	rm -rf .pytest_cache/ .coverage htmlcov/ .mypy_cache/ .ruff_cache/
+
+bump-python:
+	uv run python scripts/bump_python.py --to "$(TO)"
+	git add -A
+	git commit -m "chore(python): bump Python to $(TO)" || true
+	@echo "Bump staged. Push/open PR when ready."
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
 	@echo "✅ Cleanup completed!"

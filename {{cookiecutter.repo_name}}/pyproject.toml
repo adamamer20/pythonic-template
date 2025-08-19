@@ -38,6 +38,7 @@ dev = [
     "beartype>=0.17.0",
     "python-dotenv>=1.0.0",
     "cruft>=2.15.0",
+    "tomli-w>=1.0.0",
 ]
 
 {% if cookiecutter.project_type == "paper" %}[project.optional-dependencies]
@@ -114,4 +115,3 @@ path = "src/{{ cookiecutter.package_name }}/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/{{ cookiecutter.package_name }}"]
-

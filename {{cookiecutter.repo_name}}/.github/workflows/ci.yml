@@ -14,23 +14,33 @@ env:
   FORCE_COLOR: 1
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-min: {{ '${{ steps.out.outputs.min }}' }}
+      py-max: {{ '${{ steps.out.outputs.max }}' }}
+      py-matrix: {{ '${{ steps.out.outputs.matrix }}' }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   test:
+    needs: compute
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        python-version: __PY_MATRIX__
+        python-version: {{ '${{ fromJson(needs.compute.outputs.py-matrix) }}' }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python "{{ '${{ matrix.python-version }}' }}"
-        uses: actions/setup-python@v5
-        with:
-          python-version: "{{ '${{ matrix.python-version }}' }}"
-
-      - name: Install uv
+      - name: Install uv & select Python
         uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: "{{ '${{ matrix.python-version }}' }}"
 
       - name: Install dependencies
         run: uv sync --all-extras
@@ -47,7 +57,7 @@ jobs:
         run: DEV_TYPECHECK=1 uv run pytest -v
 
       - name: Upload coverage to Codecov
-        if: matrix.python-version == '__PY_MAX__'
+        if: {{ '${{ matrix.python-version == needs.compute.outputs.py-max }}' }}
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml

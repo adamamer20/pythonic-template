@@ -188,6 +188,8 @@ The devcontainer automatically configures your selected agents!
 
 The template includes CI/CD workflows for testing, building, publishing to PyPI, documentation deployment, and paper rendering (for academic projects).
 
+Note: Supported Python versions are derived from `project.requires-python` in `pyproject.toml`. CI tests only the minimum and maximum supported minors.
+
 ## Template Synchronization
 
 Projects generated from this template can stay synchronized with template updates using [Cruft](https://cruft.github.io/cruft/):

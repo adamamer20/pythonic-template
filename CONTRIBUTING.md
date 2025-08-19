@@ -123,6 +123,14 @@ pytest
 - Add docstrings for any Python code (NumPy style)
 - Update cookiecutter.json documentation if adding new variables
 
+## 🔀 Bumping Python Version
+
+Supported Python versions are derived from `project.requires-python` in `pyproject.toml`.
+
+- Choose the new minor (e.g., `3.12`).
+- Run: `make bump-python TO=3.12`.
+- Push and open a PR — CI tests only the min and max minors automatically.
+
 ## 📋 Pull Request Process
 
 1. **Ensure all tests pass**:
@@ -198,7 +206,6 @@ We maintain consistency across GitHub Actions versions:
 | Action | Version | Purpose |
 |--------|---------|----------|
 | `actions/checkout` | `@v4` | Repository checkout |
-| `actions/setup-python` | `@v5` | Python setup |
 | `astral-sh/setup-uv` | `@v6` | UV package manager |
 | `codecov/codecov-action` | `@v5` | Coverage reporting |
 | `actions/configure-pages` | `@v5` | GitHub Pages setup |

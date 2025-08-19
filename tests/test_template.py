@@ -636,10 +636,10 @@ def test_dynamic_python_versions():
 
             project_path = Path(temp_dir) / "my-amazing-library"
             
-            # Test CI workflow matrix
+            # Test CI workflow computes matrix dynamically
             ci_content = (project_path / ".github/workflows/ci.yml").read_text()
             assert "python-version: __PY_MATRIX__" not in ci_content, "Tokens should be replaced in CI"
-            assert f"python-version: [" in ci_content, "Matrix should be populated"
+            assert "fromJson(needs.compute.outputs.py-matrix)" in ci_content, "Matrix should be dynamic from compute step"
             
             # Test Codecov condition uses max version
             assert 'if: matrix.python-version == \'__PY_MAX__\'' not in ci_content, "MAX token should be replaced"
@@ -694,12 +694,9 @@ def test_python_version_matrix_generation():
         project_path = Path(temp_dir) / "my-amazing-library"
         ci_content = (project_path / ".github/workflows/ci.yml").read_text()
         
-        # Should include minimum version and higher
-        assert '"3.12"' in ci_content, "Should include minimum version 3.12"
-        
-        # Should not include lower versions
-        assert '"3.11"' not in ci_content, "Should not include versions below minimum"
-        assert '"3.10"' not in ci_content, "Should not include versions below minimum"
+        # Should use dynamic matrix from compute step
+        assert "uses: ./.github/actions/compute-python" in ci_content, "Should compute Python versions via action"
+        assert "fromJson(needs.compute.outputs.py-matrix)" in ci_content, "Should use dynamic matrix expression"
 
 
 def test_no_leftover_tokens():

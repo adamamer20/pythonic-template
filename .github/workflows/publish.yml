@@ -8,17 +8,28 @@ permissions:
   id-token: write  # Required for Trusted Publishing
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-min: ${{ steps.out.outputs.min }}
+      py-max: ${{ steps.out.outputs.max }}
+      py-matrix: ${{ steps.out.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   build-and-publish:
+    needs: compute
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install uv (manage Python)
+      - name: Install uv & select Python (max)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          manage-python: true
-          python-version: '3.12'
+          python-version: ${{ needs.compute.outputs.py-max }}
 
       - name: Sync environment
         run: uv sync --all-extras

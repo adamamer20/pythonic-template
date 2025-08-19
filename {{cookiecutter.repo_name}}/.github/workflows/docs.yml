@@ -19,17 +19,26 @@ env:
   FORCE_COLOR: 1
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-max: {{ '${{ steps.out.outputs.max }}' }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   docs:
+    needs: compute
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install uv (manage Python)
+      - name: Install uv & select Python (max)
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          manage-python: true
-          python-version: '__PY_MAX__'
+          python-version: {{ '${{ needs.compute.outputs.py-max }}' }}
 
       - name: Install dependencies
         run: uv sync --extra docs
