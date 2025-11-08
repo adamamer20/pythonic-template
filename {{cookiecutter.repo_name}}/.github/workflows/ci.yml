@@ -7,30 +7,40 @@ on:
     branches: [ main, develop ]
 
 concurrency:
-  group: "{{ '${{ github.workflow }}-${{ github.ref }}' }}"
+  group: "{% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}"
   cancel-in-progress: true
 
 env:
   FORCE_COLOR: 1
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-min: "{% raw %}${{ steps.out.outputs.min }}{% endraw %}"
+      py-max: "{% raw %}${{ steps.out.outputs.max }}{% endraw %}"
+      py-matrix: "{% raw %}${{ steps.out.outputs.matrix }}{% endraw %}"
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   test:
+    needs: compute
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        python-version: ['3.11', '3.12', '3.13']
+        python-version: "{% raw %}${{ fromJson(needs.compute.outputs.py-matrix) }}{% endraw %}"
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python "{{ '${{ matrix.python-version }}' }}"
-        uses: actions/setup-python@v5
+      - name: Install uv & select Python
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: "{{ '${{ matrix.python-version }}' }}"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+          enable-cache: true
+          python-version: "{% raw %}${{ matrix.python-version }}{% endraw %}"
 
       - name: Install dependencies
         run: uv sync --all-extras
@@ -44,13 +54,13 @@ jobs:
         run: uv run pytest -v --cov={{ cookiecutter.package_name }} --cov-report=xml
 
       - name: Test with runtime type checking
-        run: uv run env DEV_TYPECHECK=1 pytest -v
+        run: DEV_TYPECHECK=1 uv run pytest -v
 
       - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v4
+        if: "{% raw %}${{ matrix.python-version == needs.compute.outputs.py-max }}{% endraw %}"
+        uses: codecov/codecov-action@v5
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           fail_ci_if_error: false
 
   auto-merge:
@@ -68,5 +78,5 @@ jobs:
       - name: Enable auto-merge for Dependabot PRs
         run: gh pr merge --auto --merge "$PR_URL"
         env:
-          PR_URL: "{{ '${{ github.event.pull_request.html_url }}' }}"
-          GITHUB_TOKEN: "{{ '${{ secrets.GITHUB_TOKEN }}' }}"
+          PR_URL: "{% raw %}${{ github.event.pull_request.html_url }}{% endraw %}"
+          GITHUB_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"

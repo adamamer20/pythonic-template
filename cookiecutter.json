@@ -1,20 +1,21 @@
 {
     "_copy_without_render": [
-        ".github/workflows/*"
+        ".github/workflows/*",
+        ".github/actions/*"
     ],
     "project_name": "My Amazing Library",
-    "package_name": "{{ cookiecutter.project_name|lower|replace(' ', '_')|replace('-', '_') }}",
     "repo_name": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
+    "package_name": "{{ cookiecutter.repo_name|lower|replace('-', '_')|replace('.', '_') }}",
     "author_name": "Adam Amer",
     "author_email": "adam@example.com",
     "github_username": "adamamer20",
     "python_version": "3.12",
     "initial_version": "0.1.0",
-    "ruff_version": "v0.11.13",
     "license": [
         "MIT",
         "Apache-2.0",
-        "BSD-3-Clause"
+        "BSD-3-Clause",
+        "Proprietary"
     ],
     "project_type": [
         "standard",
@@ -23,7 +24,7 @@
     "ai_agents": [
         "all",
         "claude_code",
-        "openai_codex", 
+        "openai_codex",
         "roo_code",
         "claude_code,openai_codex",
         "claude_code,roo_code",

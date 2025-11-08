@@ -19,28 +19,36 @@ env:
   FORCE_COLOR: 1
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-max: "{% raw %}${{ steps.out.outputs.max }}{% endraw %}"
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   docs:
+    needs: compute
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv & select Python (max)
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+          enable-cache: true
+          python-version: "{% raw %}${{ needs.compute.outputs.py-max }}{% endraw %}"
 
       - name: Install dependencies
-        run: uv pip install --system -e .[docs]
+        run: uv sync --extra docs
 
       - name: Build documentation
-        run: mkdocs build --strict
+        run: uv run mkdocs build --strict
 
       - name: Setup Pages
         if: github.ref == 'refs/heads/main'
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main'
@@ -52,10 +60,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: "{% raw %}${{ steps.deployment.outputs.page_url }}{% endraw %}"
     runs-on: ubuntu-latest
     needs: docs
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

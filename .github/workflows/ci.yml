@@ -12,62 +12,72 @@ concurrency:
 
 env:
   FORCE_COLOR: 1
+  COOKIECUTTER_CONFIG: cookiecutter-ci.yaml
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-min: ${{ steps.out.outputs.min }}
+      py-max: ${{ steps.out.outputs.max }}
+      py-matrix: ${{ steps.out.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   lint-and-test:
+    needs: compute
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.12']
+        python-version: ${{ fromJson(needs.compute.outputs.py-matrix) }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv & select Python
+        uses: astral-sh/setup-uv@v6
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-
       - name: Install template dependencies
-        run: uv pip install --system -e .[dev]
+        run: uv sync --all-extras
 
       - name: Lint template files
         run: |
-          ruff check hooks/ tests/
-          ruff format --check hooks/ tests/
+          uv run ruff check hooks/ tests/
+          uv run ruff format --check hooks/ tests/
 
       - name: Run template tests
-        run: pytest tests/ -v
+        run: uv run pytest tests/ -v
 
   validate-template:
+    needs: compute
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.12']
+        python-version: ${{ fromJson(needs.compute.outputs.py-matrix) }}
         use-docker: ['y', 'n']
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv & select Python
+        uses: astral-sh/setup-uv@v6
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-
       - name: Install template dependencies
-        run: uv pip install --system -e .[dev]
+        run: uv sync --all-extras
 
       - name: Generate test project
         run: |
-          cookiecutter . --no-input \
+          uv run cookiecutter . --no-input \
             python_version=${{ matrix.python-version }} \
             use_docker=${{ matrix.use-docker }} \
             --output-dir /tmp/test-projects
@@ -77,14 +87,14 @@ jobs:
         run: |
           # Install uv in the generated project
           uv sync --all-extras
-          
+
           # Run linting
           uv run ruff check .
           uv run ruff format --check .
-          
+
           # Run tests
           uv run pytest -v
-          
+
           # Test building the package
           uv build
 
@@ -98,32 +108,31 @@ jobs:
           docker build --target development -t test-dev .
 
   test-hooks:
+    needs: compute
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv & select Python (max)
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
+          enable-cache: true
+          python-version: ${{ needs.compute.outputs.py-max }}
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-
-      - name: Install cookiecutter
-        run: uv pip install --system cookiecutter
+      - name: Sync environment
+        run: uv sync --all-extras
 
       - name: Test post-generation hook
         run: |
           cd /tmp
-          cookiecutter ${{ github.workspace }} --no-input
+          uv run cookiecutter ${{ github.workspace }} --no-input
           cd my-amazing-library
-          
+
           # Verify git was initialized
           test -d .git
-          
+
           # Verify initial commit exists
-          git log --oneline | head -1
-          
+          git rev-parse --verify HEAD >/dev/null
+
           # Verify pre-commit is configured
           test -f .pre-commit-config.yaml

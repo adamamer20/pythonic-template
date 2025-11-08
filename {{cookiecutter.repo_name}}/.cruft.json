@@ -12,7 +12,6 @@
             "github_username": "{{ cookiecutter.github_username }}",
             "python_version": "{{ cookiecutter.python_version }}",
             "initial_version": "{{ cookiecutter.initial_version }}",
-            "ruff_version": "{{ cookiecutter.ruff_version }}",
             "license": "{{ cookiecutter.license }}",
             "project_type": "{{ cookiecutter.project_type }}",
             "ai_agents": "{{ cookiecutter.ai_agents }}",

@@ -22,7 +22,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  compute:
+    runs-on: ubuntu-latest
+    outputs:
+      py-min: ${{ steps.out.outputs.min }}
+      py-max: ${{ steps.out.outputs.max }}
+      py-matrix: ${{ steps.out.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: out
+        uses: ./.github/actions/compute-python
+
   build:
+    needs: compute
     runs-on: ${{ matrix.os }}-latest
     # We need an explicit timeout because sometimes the batch_runner test never
     # completes.
@@ -30,30 +42,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows, ubuntu, macos]
-        python-version: ['3.13']
-        include:
-          - os: ubuntu
-            python-version: '3.11'
-          - os: ubuntu
-            python-version: '3.12'
+        os: [ubuntu]
+        python-version: ${{ fromJson(needs.compute.outputs.py-matrix) }}
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install uv via GitHub Action
+    - name: Install uv & select Python
       uses: astral-sh/setup-uv@v6
-    - name: Install pythonic-template + dev dependencies
+      with:
+        enable-cache: true
+        python-version: ${{ matrix.python-version }}
+    - name: Sync environment (dev dependencies)
       run: |
-        uv pip install --system .
-        uv pip install --group dev --system
+        uv sync --all-extras
     - name: Test with pytest
-      run: pytest --durations=10 --cov=hooks --cov-branch tests/ --cov-report=xml
+      run: uv run pytest --durations=10 --cov=hooks --cov-branch tests/ --cov-report=xml
     - if: matrix.os == 'ubuntu'
       name: Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}

@@ -84,3 +84,4 @@ docs/_build/
 
 # Local overrides
 .env
+.cookiecutter_replay/

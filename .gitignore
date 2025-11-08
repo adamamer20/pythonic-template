@@ -10,3 +10,6 @@ wheels/
 .venv
 
 site
+repository_*
+.cookiecutter_replay/
+.pre-commit-cache
