@@ -1,135 +1,87 @@
-# Project Instructions
+## Daily Commands
 
-This file summarizes coding and project guidelines. Apply it to this template and any projects generated from it.
+Use the Makefile for all tasks — it is the single source of truth for development.
 
-## Development Environment Setup
+| Command                         | Description                       |
+| ------------------------------- | --------------------------------- |
+| `make help`                     | List all available commands       |
+| `make setup`                    | One-time environment setup        |
+| `make dev`                      | Start the development environment |
+| `make check`                    | Run all quality checks and tests  |
+| `make test` / `make quick-test` | Run the full or fast test suite   |
+| `make format` / `make lint`     | Format and lint the code          |
+| `make sync` / `make upgrade`    | Sync or upgrade dependencies      |
+| `make clean`                    | Remove build artifacts            |
 
-**CRITICAL: Always use the Makefile for development tasks!**
+## Philosophy
 
-The Makefile is the CENTRAL hub for all development operations. Every command should go through make targets for consistency and ease of use.
-
-### Core Development Setup
-
-1. **Project Generation**: Install `cookiecutter` via `uv tool install cookiecutter`
-2. **Generate project**:
-   ```bash
-   cookiecutter https://github.com/adamamer20/pythonic-template
-   ```
-3. **Initial setup** (ALWAYS use make):
-   ```bash
-   cd your-new-project
-   make setup  # This installs dependencies and sets up pre-commit
-   ```
-
-### Essential Make Commands (Use These Daily!)
-
-- `make help` - Show all available commands (ALWAYS start here)
-- `make setup` - Complete development environment setup
-- `make dev` - Start development environment
-- `make test` - Run tests with type checking
-- `make quick-test` - Fast tests without coverage
-- `make lint` - Run linting and fix issues
-- `make format` - Format code
-- `make check` - Run all quality checks + tests
-- `make clean` - Clean build artifacts
-
-### AI Agent Integration
-
-This template supports multiple AI development assistants:
-
-- **Claude Code CLI**: Anthropic's official CLI (`make ai-setup`)
-- **OpenAI Codex**: Uses AGENTS.md instructions
-- **Roo Code**: Advanced AI with `.roo/rules-code/rules.md`
-
-The devcontainer automatically installs your selected AI agents and sets up:
-- Qdrant vector database (for Roo Code)
-- Ollama local LLM runtime (for Roo Code)
-- VS Code extensions for each agent
-
-Keep a copy of this file in child projects so these rules apply everywhere.
-
-## Philosophy and General Principles
-
-- Prefer clarity over cleverness.
-- Keep a single type per variable.
-- Use PEP 484/695 type hints throughout.
-- Write small, modular functions and avoid duplication.
-- Do not hard-code paths, GPUs or URLs; read from environment variables.
-- Inline comments should explain why, and stay under 80 characters.
+* Prefer clarity over cleverness.
+* Keep a single, stable type per variable.
+* Use full PEP 484/695 type hints.
+* Write small, modular, reusable functions.
+* Never hard-code paths, GPUs, or URLs — always read from environment variables.
+* Inline comments should explain *why*, not *what* (keep lines under 80 characters).
 
 ## Environment and Tooling
 
-**CRITICAL: USE MAKEFILE COMMANDS INSTEAD OF DIRECT TOOL CALLS!**
+* Dependency management: **uv** (handles lockfiles).
+* Formatting and linting: **ruff** via **pre-commit**.
+* Runtime type checking: **beartype** (no mypy required).
+* Configuration: load from `.env` and/or `pyproject.toml`.
+* Use Fish shell if available.
+* Prefer `pathlib` over `os.path`; keep imports at the top of files.
 
-- Manage dependencies with `uv`; let it handle lockfiles.
-- Fish shell
-- Load configuration from `.env` or `pyproject.toml`.
-- Enforce formatting and linting with ruff via pre-commit.
-- **Use beartype for runtime type checking** (no mypy needed).
+**Direct `uv` commands (when Make doesn’t cover it):**
 
-### Package Management (via Make)
-
-- `make sync` - Sync dependencies with lockfile
-- `make upgrade` - Upgrade all dependencies
-
-### Direct uv commands (when Make doesn't cover it)
-
-- `uv add <package>` adds a dependency and updates the lockfile.
-- `uv remove <package>` removes a dependency and updates the lockfile.
-- `uv run <package>` runs a package from the current environment.
+```bash
+uv add <package>      # Add dependency and update lockfile
+uv remove <package>   # Remove dependency and update lockfile
+uv run <command>      # Run a command within the project environment
+```
 
 ## Testing and Continuous Integration
 
-**CRITICAL: ALWAYS USE MAKE FOR TESTING!**
+* Use **pytest** and follow test-driven development when practical.
+* Coverage reports: `make test-cov`.
+* Local CI pipeline: `make ci` (mirrors GitHub Actions).
+* GitHub Actions runs:
 
-- Follow test-driven development using pytest.
-- `make test` - Run full test suite with type checking
-- `make test-cov` - Run tests with coverage reports
-- `make quick-test` - Fast tests for development
-- `make ci` - Run full CI pipeline locally
-- GitHub Actions workflow uses `uv sync --all-extras --dev`, then `make check`
-- Enable pre-commit.ci for automatic lint fixes on pull requests.
+  ```bash
+  uv sync --all-extras --dev
+  make check
+  ```
+* Enable **pre-commit.ci** to automatically fix linting issues on pull requests.
 
 ## Data and Performance
 
-- Use polars instead of pandas when possible.
-- Vectorise heavy numerical work with polars; fallback to numpy otherwise; benchmark loops before keeping them.
+* Prefer **Polars** over Pandas.
+* Vectorize heavy numerical work with Polars; fall back to NumPy only if necessary.
+* Benchmark before keeping explicit loops.
 
-## Documentation and Structure
 
-- Control the public API with explicit `__all__` exports.
-- Write NumPy-style docstrings with parameters, returns, raises and examples.
-- Keep examples small and runnable with `pytest -q`.
-- Use argparse for CLI interfaces and add a `--help` option.
-- Place imports at the top of each file.
+## Code Style and Structure
 
-## Safety and Best Practices
+* Control the public API with explicit `__all__`.
+* Write NumPy-style docstrings including *Parameters*, *Returns*, *Raises*, and *Examples*.
+* Keep examples minimal and runnable with `pytest -q`.
+* Use `argparse` for CLI tools and always include a `--help` option.
+* Avoid global state and implicit side effects.
 
-- Avoid `eval` and `exec`; use parameterised queries for SQL.
-- Keep secrets in environment variables.
-- Add a module-level logger with configurable log format.
+## Safety and Logging
 
-## Extras
+* Never use `eval` or `exec`.
+* Use parameterized SQL queries.
+* Store secrets in environment variables only.
+* Each module should define a logger with configurable level and format.
 
-- Use `dataclasses.dataclass(slots=True, frozen=False)` or `pydantic.BaseModel` v2 for configuration.
-- **The Makefile IS PROVIDED and is MANDATORY** - use it for all development tasks.
-{% if cookiecutter.project_type == "paper" %}- For paper projects: `make paper-render`, `make paper-preview`, `make paper-check`{% endif %}
+## Configuration Models
 
-## Template Features
+* Prefer `@dataclass(slots=True)` for lightweight configuration objects.
+* Use `pydantic.BaseModel` v2 for validated and coercive models.
 
-### Project Types
-- **Standard**: Regular Python package
-{% if cookiecutter.project_type == "paper" %}- **Paper**: Academic paper with Quarto, includes paper/ directory with paper.qmd{% endif %}
+## Development Containers
 
-### AI Agent Support
-- Choose from Claude Code CLI, OpenAI Codex, Roo Code, or combinations
-- Automatic devcontainer configuration for selected agents
-- Qdrant + Ollama setup for advanced AI workflows
-
-### Development Containers
-- Multi-stage Dockerfile with development, builder, and runtime stages
-- Docker Compose with service orchestration
-- VS Code devcontainer with proper extensions and settings
-- Port forwarding for development servers and AI services
-
-Remember: **MAKEFILE IS KING** - always check `make help` first!
+* Multi-stage Dockerfile: development, builder, and runtime stages.
+* Docker Compose for service orchestration.
+* VS Code devcontainer with recommended extensions and settings.
+* Support for port forwarding for development servers and AI services.
